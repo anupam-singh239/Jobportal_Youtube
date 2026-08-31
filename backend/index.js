@@ -34,7 +34,7 @@ app.use("/api/v1/job",jobRoute);
 app.use("/api/v1/application",applicationRoute);
 
 app.use(express.static(path.join(_dirname,"/frontend/dist")));
-app.get('*',(_,res) =>{
+app.get('/*splat', (_, res) => {
     res.sendFile(path.resolve(_dirname,"frontend","dist","index.html"));
 });
 
