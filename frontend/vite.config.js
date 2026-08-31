@@ -6,9 +6,14 @@ import { defineConfig } from "vite"
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
+  },
+
+  preview: {
+    allowedHosts: ["jobportal-youtube-3.onrender.com"],
   },
 })
