@@ -6,7 +6,6 @@ import { useSelector } from "react-redux";
 import { motion, AnimatePresence } from "framer-motion";
 
 const Jobs = () => {
-
     const { allJobs = [] } = useSelector(
         (store) => store.job
     );
@@ -22,7 +21,6 @@ const Jobs = () => {
     // ==========================================
 
     const filteredJobs = useMemo(() => {
-
         return allJobs.filter((job) => {
 
             // ===============================
@@ -30,7 +28,6 @@ const Jobs = () => {
             // ===============================
 
             if (filters.Location) {
-
                 const jobLocation =
                     job?.location?.toLowerCase() || "";
 
@@ -51,7 +48,6 @@ const Jobs = () => {
             // ===============================
 
             if (filters.Industry) {
-
                 const normalizeText = (text = "") => {
                     return text
                         .toLowerCase()
@@ -104,62 +100,51 @@ const Jobs = () => {
             // ===============================
 
             if (filters.Salary) {
-
                 const salary =
                     Number(job?.salary) || 0;
 
                 switch (filters.Salary) {
 
                     case "0-2 LPA":
-
                         if (
                             salary < 0 ||
                             salary > 2
                         ) {
                             return false;
                         }
-
                         break;
 
                     case "2-5 LPA":
-
                         if (
                             salary <= 2 ||
                             salary > 5
                         ) {
                             return false;
                         }
-
                         break;
 
                     case "5-10 LPA":
-
                         if (
                             salary <= 5 ||
                             salary > 10
                         ) {
                             return false;
                         }
-
                         break;
 
                     case "10-20 LPA":
-
                         if (
                             salary <= 10 ||
                             salary > 20
                         ) {
                             return false;
                         }
-
                         break;
 
                     case "20+ LPA":
-
                         if (salary <= 20) {
                             return false;
                         }
-
                         break;
 
                     default:
@@ -198,7 +183,16 @@ const Jobs = () => {
                 className="max-w-7xl mx-auto mt-5 px-4"
             >
 
-                <div className="flex gap-5">
+                {/* MOBILE:
+                    Filter upar
+                    Jobs neeche
+
+                    DESKTOP:
+                    Filter left
+                    Jobs right
+                */}
+
+                <div className="flex flex-col md:flex-row gap-5">
 
                     {/* ================= FILTER ================= */}
 
@@ -214,7 +208,7 @@ const Jobs = () => {
                         transition={{
                             duration: 0.45,
                         }}
-                        className="w-[250px] flex-shrink-0"
+                        className="w-full md:w-[250px] flex-shrink-0"
                     >
 
                         <FilterCard
@@ -226,7 +220,7 @@ const Jobs = () => {
 
                     {/* ================= JOBS ================= */}
 
-                    <div className="flex-1 h-[88vh] overflow-y-auto pb-5">
+                    <div className="flex-1 min-w-0 h-auto md:h-[88vh] overflow-y-auto pb-5">
 
                         {filteredJobs.length === 0 ? (
 

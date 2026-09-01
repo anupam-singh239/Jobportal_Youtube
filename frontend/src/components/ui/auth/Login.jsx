@@ -13,7 +13,11 @@ const Login = () => {
         password: "",
         role: "",
     });
-    const { loading,user } = useSelector(store => store.auth);
+
+    const { loading, user } = useSelector(
+        (store) => store.auth
+    );
+
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -29,6 +33,7 @@ const Login = () => {
 
         try {
             dispatch(setLoading(true));
+
             const res = await axios.post(
                 `${USER_API_END_POINT}/login`,
                 input,
@@ -41,40 +46,58 @@ const Login = () => {
             );
 
             if (res.data.success) {
-                navigate("/");
                 dispatch(setUser(res.data.user));
+                navigate("/");
                 console.log(res.data.message);
             }
         } catch (error) {
             console.log(error);
+
             console.log(
-                error.response?.data?.message || "Login failed"
+                error.response?.data?.message ||
+                    "Login failed"
             );
         } finally {
             dispatch(setLoading(false));
         }
     };
 
-    useEffect(() =>{
-        if(user){
+    useEffect(() => {
+        if (user) {
             navigate("/");
         }
-    })
+    }, [user, navigate]);
 
     return (
-        <div>
+        <div className="min-h-screen">
             <Navbar />
 
-            <div className="flex items-center justify-center max-w-7xl mx-auto">
+            {/* ================= LOGIN CONTAINER ================= */}
+
+            <div className="flex items-center justify-center w-full max-w-7xl mx-auto px-4 sm:px-6">
                 <form
                     onSubmit={submitHandler}
-                    className="w-1/2 border border-gray-200 rounded-md p-6 my-10"
+                    className="
+                        w-full
+                        sm:w-[90%]
+                        md:w-1/2
+                        lg:w-1/2
+                        max-w-xl
+                        border
+                        border-gray-200
+                        rounded-md
+                        p-5
+                        sm:p-6
+                        my-6
+                        sm:my-10
+                    "
                 >
                     <h1 className="font-bold text-xl mb-5">
                         Login
                     </h1>
 
-                    {/* Email */}
+                    {/* ================= EMAIL ================= */}
+
                     <div className="my-4">
                         <label className="block mb-2 font-medium">
                             Email
@@ -86,12 +109,21 @@ const Login = () => {
                             name="email"
                             onChange={changeEventHandler}
                             placeholder="anupam@gmail.com"
-                            className="w-full border border-gray-300 rounded-md p-2"
+                            className="
+                                w-full
+                                border
+                                border-gray-300
+                                rounded-md
+                                p-2.5
+                                outline-none
+                                focus:border-[#6A38C2]
+                            "
                             required
                         />
                     </div>
 
-                    {/* Password */}
+                    {/* ================= PASSWORD ================= */}
+
                     <div className="my-4">
                         <label className="block mb-2 font-medium">
                             Password
@@ -103,28 +135,43 @@ const Login = () => {
                             name="password"
                             onChange={changeEventHandler}
                             placeholder="Enter your password"
-                            className="w-full border border-gray-300 rounded-md p-2"
+                            className="
+                                w-full
+                                border
+                                border-gray-300
+                                rounded-md
+                                p-2.5
+                                outline-none
+                                focus:border-[#6A38C2]
+                            "
                             required
                         />
                     </div>
 
-                    {/* Role */}
+                    {/* ================= ROLE ================= */}
+
                     <div className="my-4">
                         <label className="block mb-2 font-medium">
                             Role
                         </label>
 
-                        <div className="flex items-center gap-6">
+                        <div className="flex items-center gap-5 sm:gap-6 flex-wrap">
 
                             <label className="flex items-center gap-2 cursor-pointer">
                                 <input
                                     type="radio"
                                     name="role"
                                     value="student"
-                                    checked={input.role === "student"}
-                                    onChange={changeEventHandler}
+                                    checked={
+                                        input.role ===
+                                        "student"
+                                    }
+                                    onChange={
+                                        changeEventHandler
+                                    }
                                 />
-                                Student
+
+                                <span>Student</span>
                             </label>
 
                             <label className="flex items-center gap-2 cursor-pointer">
@@ -132,29 +179,65 @@ const Login = () => {
                                     type="radio"
                                     name="role"
                                     value="recruiter"
-                                    checked={input.role === "recruiter"}
-                                    onChange={changeEventHandler}
+                                    checked={
+                                        input.role ===
+                                        "recruiter"
+                                    }
+                                    onChange={
+                                        changeEventHandler
+                                    }
                                 />
-                                Recruiter
+
+                                <span>Recruiter</span>
                             </label>
 
                         </div>
                     </div>
-                    {
-                        loading ? <button className="w-full my-4"><Loader2 className='mr-2 h-4 w-4 animate-spin' />Please wait </button> : <button
+
+                    {/* ================= LOGIN BUTTON ================= */}
+
+                    {loading ? (
+                        <button
+                            type="button"
+                            disabled
+                            className="
+                                w-full
+                                my-4
+                                flex
+                                items-center
+                                justify-center
+                                bg-gray-400
+                                text-white
+                                py-2
+                                rounded-md
+                            "
+                        >
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+
+                            Please wait
+                        </button>
+                    ) : (
+                        <button
                             type="submit"
-                            className="w-full bg-[#6A38C2] hover:bg-[#5b2fa8] text-white py-2 rounded-md"
+                            className="
+                                w-full
+                                bg-[#6A38C2]
+                                hover:bg-[#5b2fa8]
+                                text-white
+                                py-2.5
+                                rounded-md
+                                transition
+                            "
                         >
                             Login
                         </button>
-                    }
+                    )}
 
-                    {/* Login Button */}
+                    {/* ================= SIGNUP ================= */}
 
-
-                    {/* Signup */}
                     <p className="mt-4 text-sm">
                         Don't have an account?{" "}
+
                         <Link
                             to="/signup"
                             className="text-blue-600 hover:underline"

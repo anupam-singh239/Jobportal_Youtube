@@ -75,7 +75,8 @@ const FilterCard = ({ onFilterChange }) => {
     return (
         <div className="w-full bg-white p-4 rounded-xl shadow-md border border-gray-100">
 
-            {/* Header */}
+            {/* ================= HEADER ================= */}
+
             <div className="flex items-center justify-between">
 
                 <h1 className="font-bold text-lg">
@@ -92,7 +93,11 @@ const FilterCard = ({ onFilterChange }) => {
 
             </div>
 
+
             <hr className="mt-3 mb-4" />
+
+
+            {/* ================= FILTERS ================= */}
 
             {filterData.map((data, index) => (
 
@@ -105,48 +110,52 @@ const FilterCard = ({ onFilterChange }) => {
                         {data.filterType}
                     </h2>
 
+
                     <div className="space-y-2">
 
-                        {data.array.map((item, itemIndex) => {
+                        {data.array.map(
+                            (item, itemIndex) => {
 
-                            const radioId =
-                                `${data.filterType}-${itemIndex}`;
+                                const radioId =
+                                    `${data.filterType}-${itemIndex}`;
 
-                            return (
-                                <div
-                                    key={itemIndex}
-                                    className="flex items-center gap-2"
-                                >
-
-                                    <input
-                                        type="radio"
-                                        id={radioId}
-                                        name={data.filterType}
-                                        value={item}
-                                        checked={
-                                            selectedFilters[
-                                                data.filterType
-                                            ] === item
-                                        }
-                                        onChange={() =>
-                                            changeHandler(
-                                                data.filterType,
-                                                item
-                                            )
-                                        }
-                                        className="w-4 h-4 accent-[#7209B7] cursor-pointer"
-                                    />
-
-                                    <label
-                                        htmlFor={radioId}
-                                        className="text-sm text-gray-700 cursor-pointer hover:text-[#7209B7]"
+                                return (
+                                    <div
+                                        key={itemIndex}
+                                        className="flex items-center gap-2"
                                     >
-                                        {item}
-                                    </label>
 
-                                </div>
-                            );
-                        })}
+                                        <input
+                                            type="radio"
+                                            id={radioId}
+                                            name={data.filterType}
+                                            value={item}
+                                            checked={
+                                                selectedFilters[
+                                                    data.filterType
+                                                ] === item
+                                            }
+                                            onChange={() =>
+                                                changeHandler(
+                                                    data.filterType,
+                                                    item
+                                                )
+                                            }
+                                            className="w-4 h-4 accent-[#7209B7] cursor-pointer"
+                                        />
+
+
+                                        <label
+                                            htmlFor={radioId}
+                                            className="text-sm text-gray-700 cursor-pointer hover:text-[#7209B7]"
+                                        >
+                                            {item}
+                                        </label>
+
+                                    </div>
+                                );
+                            }
+                        )}
 
                     </div>
 

@@ -4,8 +4,7 @@ import Navbar from "../shared/Navbar";
 import axios from "axios";
 import { USER_API_END_POINT } from "@/utils/constant";
 import { useDispatch, useSelector } from "react-redux";
-import store from "@/redux/store";
-import { setLoading } from "@/redux/authSlice";
+import { setLoading, setUser } from "@/redux/authSlice";
 import { Loader2 } from "lucide-react";
 
 const Signup = () => {
@@ -19,7 +18,11 @@ const Signup = () => {
     });
 
     const navigate = useNavigate();
-    const {loading , user} = useSelector(store=>store.auth);
+
+    const { loading, user } = useSelector(
+        (store) => store.auth
+    );
+
     const dispatch = useDispatch();
 
     const changeEventHandler = (e) => {
@@ -41,18 +44,41 @@ const Signup = () => {
 
         const formData = new FormData();
 
-        formData.append("fullname", input.fullname);
-        formData.append("email", input.email);
-        formData.append("phoneNumber", input.phoneNumber);
-        formData.append("password", input.password);
-        formData.append("role", input.role);
+        formData.append(
+            "fullname",
+            input.fullname
+        );
+
+        formData.append(
+            "email",
+            input.email
+        );
+
+        formData.append(
+            "phoneNumber",
+            input.phoneNumber
+        );
+
+        formData.append(
+            "password",
+            input.password
+        );
+
+        formData.append(
+            "role",
+            input.role
+        );
 
         if (input.file) {
-            formData.append("file", input.file);
+            formData.append(
+                "file",
+                input.file
+            );
         }
 
         try {
             dispatch(setLoading(true));
+
             const res = await axios.post(
                 `${USER_API_END_POINT}/register`,
                 formData,
@@ -63,38 +89,64 @@ const Signup = () => {
 
             if (res.data.success) {
                 navigate("/login");
-                console.log(res.data.message);
+
+                console.log(
+                    res.data.message
+                );
             }
         } catch (error) {
             console.log(error);
+
             console.log(
-                error.response?.data?.message || "Signup failed"
+                error.response?.data?.message ||
+                    "Signup failed"
             );
-            console.log("STATUS:", error.response?.status);
-        } finally{
+
+            console.log(
+                "STATUS:",
+                error.response?.status
+            );
+        } finally {
             dispatch(setLoading(false));
         }
     };
-    useEffect(() =>{
-            if(user){
-                navigate("/");
-            }
-        })
+
+    useEffect(() => {
+        if (user) {
+            navigate("/");
+        }
+    }, [user, navigate]);
 
     return (
-        <div>
+        <div className="min-h-screen">
             <Navbar />
 
-            <div className="flex items-center justify-center max-w-7xl mx-auto">
+            {/* ================= SIGNUP CONTAINER ================= */}
+
+            <div className="flex items-center justify-center w-full max-w-7xl mx-auto px-4 sm:px-6">
                 <form
                     onSubmit={submitHandler}
-                    className="w-1/2 border border-gray-200 rounded-md p-6 my-10"
+                    className="
+                        w-full
+                        sm:w-[90%]
+                        md:w-1/2
+                        lg:w-1/2
+                        max-w-xl
+                        border
+                        border-gray-200
+                        rounded-md
+                        p-5
+                        sm:p-6
+                        my-6
+                        sm:my-10
+                    "
                 >
                     <h1 className="font-bold text-xl mb-5">
                         Sign Up
                     </h1>
 
-                    {/* Full Name */}
+                    {/* ================= FULL NAME ================= */}
+
                     <div className="my-4">
                         <label className="block mb-2 font-medium">
                             Full Name
@@ -104,14 +156,25 @@ const Signup = () => {
                             type="text"
                             value={input.fullname}
                             name="fullname"
-                            onChange={changeEventHandler}
+                            onChange={
+                                changeEventHandler
+                            }
                             placeholder="Anupam Singh"
-                            className="w-full border border-gray-300 rounded-md p-2"
+                            className="
+                                w-full
+                                border
+                                border-gray-300
+                                rounded-md
+                                p-2.5
+                                outline-none
+                                focus:border-[#6A38C2]
+                            "
                             required
                         />
                     </div>
 
-                    {/* Email */}
+                    {/* ================= EMAIL ================= */}
+
                     <div className="my-4">
                         <label className="block mb-2 font-medium">
                             Email
@@ -121,14 +184,25 @@ const Signup = () => {
                             type="email"
                             value={input.email}
                             name="email"
-                            onChange={changeEventHandler}
+                            onChange={
+                                changeEventHandler
+                            }
                             placeholder="anupam@gmail.com"
-                            className="w-full border border-gray-300 rounded-md p-2"
+                            className="
+                                w-full
+                                border
+                                border-gray-300
+                                rounded-md
+                                p-2.5
+                                outline-none
+                                focus:border-[#6A38C2]
+                            "
                             required
                         />
                     </div>
 
-                    {/* Phone Number */}
+                    {/* ================= PHONE ================= */}
+
                     <div className="my-4">
                         <label className="block mb-2 font-medium">
                             Phone Number
@@ -138,14 +212,25 @@ const Signup = () => {
                             type="tel"
                             value={input.phoneNumber}
                             name="phoneNumber"
-                            onChange={changeEventHandler}
+                            onChange={
+                                changeEventHandler
+                            }
                             placeholder="7223806163"
-                            className="w-full border border-gray-300 rounded-md p-2"
+                            className="
+                                w-full
+                                border
+                                border-gray-300
+                                rounded-md
+                                p-2.5
+                                outline-none
+                                focus:border-[#6A38C2]
+                            "
                             required
                         />
                     </div>
 
-                    {/* Password */}
+                    {/* ================= PASSWORD ================= */}
+
                     <div className="my-4">
                         <label className="block mb-2 font-medium">
                             Password
@@ -155,31 +240,48 @@ const Signup = () => {
                             type="password"
                             value={input.password}
                             name="password"
-                            onChange={changeEventHandler}
+                            onChange={
+                                changeEventHandler
+                            }
                             placeholder="Enter your password"
-                            className="w-full border border-gray-300 rounded-md p-2"
+                            className="
+                                w-full
+                                border
+                                border-gray-300
+                                rounded-md
+                                p-2.5
+                                outline-none
+                                focus:border-[#6A38C2]
+                            "
                             required
                         />
                     </div>
 
-                    {/* Role */}
+                    {/* ================= ROLE ================= */}
+
                     <div className="my-4">
                         <label className="block mb-2 font-medium">
                             Role
                         </label>
 
-                        <div className="flex items-center gap-6">
+                        <div className="flex items-center gap-5 sm:gap-6 flex-wrap">
 
                             <label className="flex items-center gap-2 cursor-pointer">
                                 <input
                                     type="radio"
                                     name="role"
                                     value="student"
-                                    checked={input.role === "student"}
-                                    onChange={changeEventHandler}
+                                    checked={
+                                        input.role ===
+                                        "student"
+                                    }
+                                    onChange={
+                                        changeEventHandler
+                                    }
                                     required
                                 />
-                                Student
+
+                                <span>Student</span>
                             </label>
 
                             <label className="flex items-center gap-2 cursor-pointer">
@@ -187,16 +289,23 @@ const Signup = () => {
                                     type="radio"
                                     name="role"
                                     value="recruiter"
-                                    checked={input.role === "recruiter"}
-                                    onChange={changeEventHandler}
+                                    checked={
+                                        input.role ===
+                                        "recruiter"
+                                    }
+                                    onChange={
+                                        changeEventHandler
+                                    }
                                 />
-                                Recruiter
+
+                                <span>Recruiter</span>
                             </label>
 
                         </div>
                     </div>
 
-                    {/* Profile Image */}
+                    {/* ================= PROFILE IMAGE ================= */}
+
                     <div className="my-4">
                         <label className="block mb-2 font-medium">
                             Profile
@@ -205,24 +314,68 @@ const Signup = () => {
                         <input
                             type="file"
                             accept="image/*"
-                            onChange={changeFileHandler}
-                            className="w-full cursor-pointer"
+                            onChange={
+                                changeFileHandler
+                            }
+                            className="
+                                block
+                                w-full
+                                max-w-full
+                                cursor-pointer
+                                text-sm
+                                border
+                                border-gray-300
+                                rounded-md
+                                p-2
+                                overflow-hidden
+                            "
                         />
                     </div>
 
-                    {/* Signup Button */}
-                    {
-                        loading ? <button className="w-full my-4"><Loader2 className='mr-2 h-4 w-4 animate-spin' />Please wait </button> : <button
+                    {/* ================= SIGNUP BUTTON ================= */}
+
+                    {loading ? (
+                        <button
+                            type="button"
+                            disabled
+                            className="
+                                w-full
+                                my-4
+                                flex
+                                items-center
+                                justify-center
+                                bg-gray-400
+                                text-white
+                                py-2.5
+                                rounded-md
+                            "
+                        >
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+
+                            Please wait
+                        </button>
+                    ) : (
+                        <button
                             type="submit"
-                            className="w-full bg-[#6A38C2] hover:bg-[#5b2fa8] text-white py-2 rounded-md"
+                            className="
+                                w-full
+                                bg-[#6A38C2]
+                                hover:bg-[#5b2fa8]
+                                text-white
+                                py-2.5
+                                rounded-md
+                                transition
+                            "
                         >
                             Signup
                         </button>
-                    }
+                    )}
 
-                    {/* Login Link */}
+                    {/* ================= LOGIN ================= */}
+
                     <p className="mt-4 text-sm">
                         Already have an account?{" "}
+
                         <Link
                             to="/login"
                             className="text-blue-600 hover:underline"
