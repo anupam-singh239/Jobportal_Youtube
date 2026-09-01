@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <url>
+    <loc>https://jobportal.buzz/</loc>
+  </url>
+
+  <url>
+    <loc>https://jobportal.buzz/jobs</loc>
+  </url>
+
+  <url>
+    <loc>https://jobportal.buzz/login</loc>
+  </url>
+
+  <url>
+    <loc>https://jobportal.buzz/signup</loc>
+  </url>
+
+</urlset>
