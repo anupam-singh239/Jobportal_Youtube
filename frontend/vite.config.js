@@ -14,6 +14,10 @@ export default defineConfig({
   },
 
   preview: {
-    allowedHosts: ["jobportal-youtube-3.onrender.com"],
+    allowedHosts: [
+      "jobportal.buzz",
+      "www.jobportal.buzz",
+      "jobportal-youtube-3.onrender.com",
+    ],
   },
 })

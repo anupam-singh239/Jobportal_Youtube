@@ -231,7 +231,9 @@ export const login = async (req, res) => {
 
                     httpOnly: true,
 
-                    sameSite: "strict",
+                    // Production / Render
+                    secure: true,
+                    sameSite: "none",
                 }
             )
             .json({
@@ -273,7 +275,10 @@ export const logout = async (req, res) => {
                 {
                     maxAge: 0,
                     httpOnly: true,
-                    sameSite: "strict",
+
+                    // Production / Render
+                    secure: true,
+                    sameSite: "none",
                 }
             )
             .json({
