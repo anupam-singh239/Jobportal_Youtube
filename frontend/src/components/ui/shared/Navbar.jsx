@@ -1,6 +1,12 @@
 import React, { useState } from "react";
+import {
+    User2,
+    LogOut,
+    ChevronDown,
+    Menu,
+    X,
+} from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { User2, LogOut, ChevronDown } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -15,6 +21,7 @@ function Navbar() {
     const navigate = useNavigate();
 
     const [openMenu, setOpenMenu] = useState(false);
+    const [mobileMenu, setMobileMenu] = useState(false);
 
     // =====================================================
     // LOGOUT
@@ -30,13 +37,10 @@ function Navbar() {
             );
 
             if (res.data.success) {
-                // Redux user clear
                 dispatch(setUser(null));
-
-                // Dropdown close
                 setOpenMenu(false);
+                setMobileMenu(false);
 
-                // Home page
                 navigate("/");
 
                 toast.success(
@@ -48,7 +52,7 @@ function Navbar() {
 
             toast.error(
                 error?.response?.data?.message ||
-                "Logout failed"
+                    "Logout failed"
             );
         }
     };
@@ -61,8 +65,20 @@ function Navbar() {
         user?.profile?.profilePhoto ||
         "https://github.com/shadcn.png";
 
+    // =====================================================
+    // CLOSE MOBILE MENU
+    // =====================================================
+
+    const closeMobileMenu = () => {
+        setMobileMenu(false);
+    };
+
     return (
         <div className="sticky top-0 z-50 w-full bg-white border-b border-gray-200 shadow-sm">
+
+            {/* =====================================================
+                MAIN NAVBAR
+            ===================================================== */}
 
             <div className="flex items-center justify-between mx-auto max-w-7xl h-16 px-4">
 
@@ -72,10 +88,11 @@ function Navbar() {
 
                 <Link
                     to="/"
+                    onClick={closeMobileMenu}
                     className="cursor-pointer flex items-center gap-2"
                 >
 
-                    {/* ================= OPTION 3 LOGO ================= */}
+                    {/* LOGO ICON */}
 
                     <div className="flex items-center justify-center shrink-0">
 
@@ -122,7 +139,7 @@ function Navbar() {
                                 fill="white"
                             />
 
-                            {/* Red Curved Career Growth Arrow */}
+                            {/* Red Career Growth Arrow */}
 
                             <path
                                 d="M10 32C17 31 23 28 28 24C34 19 38 14 43 9"
@@ -147,9 +164,9 @@ function Navbar() {
                     </div>
 
 
-                    {/* ================= BRAND NAME ================= */}
+                    {/* BRAND NAME */}
 
-                    <h1 className="text-2xl font-bold">
+                    <h1 className="text-xl sm:text-2xl font-bold">
                         Job{" "}
                         <span className="text-[#F83002]">
                             Portal
@@ -159,21 +176,19 @@ function Navbar() {
                 </Link>
 
 
-                {/* =================================================
-                    RIGHT SIDE
-                ================================================= */}
+                {/* =====================================================
+                    DESKTOP RIGHT SIDE
+                ===================================================== */}
 
-                <div className="flex items-center gap-10">
+                <div className="hidden md:flex items-center gap-10">
 
                     {/* =================================================
-                        MENU
+                        DESKTOP MENU
                     ================================================= */}
 
                     <ul className="flex font-medium items-center gap-6">
 
-                        {/* =================================================
-                            RECRUITER
-                        ================================================= */}
+                        {/* RECRUITER */}
 
                         {user?.role === "recruiter" ? (
                             <>
@@ -197,9 +212,7 @@ function Navbar() {
                             </>
                         ) : (
 
-                            /* =================================================
-                                STUDENT
-                            ================================================= */
+                            /* STUDENT */
 
                             <>
                                 <li>
@@ -235,48 +248,43 @@ function Navbar() {
 
 
                     {/* =================================================
-                        USER SECTION
+                        DESKTOP USER SECTION
                     ================================================= */}
 
                     {!user ? (
 
-                        /* =================================================
-                            LOGIN / SIGNUP
-                        ================================================= */
-
                         <div className="flex items-center gap-2">
 
                             <Link to="/login">
+
                                 <button
                                     type="button"
                                     className="border border-gray-300 px-4 py-2 rounded-md hover:bg-gray-100 transition cursor-pointer"
                                 >
                                     Login
                                 </button>
+
                             </Link>
 
+
                             <Link to="/signup">
+
                                 <button
                                     type="button"
                                     className="bg-[#6A38C2] text-white px-4 py-2 rounded-md hover:bg-[#5b2fa8] transition cursor-pointer"
                                 >
                                     Signup
                                 </button>
+
                             </Link>
 
                         </div>
 
                     ) : (
 
-                        /* =================================================
-                            LOGGED IN USER
-                        ================================================= */
-
                         <div className="relative">
 
-                            {/* =================================================
-                                PROFILE BUTTON
-                            ================================================= */}
+                            {/* PROFILE BUTTON */}
 
                             <button
                                 type="button"
@@ -285,8 +293,6 @@ function Navbar() {
                                 }
                                 className="flex items-center gap-2 cursor-pointer outline-none"
                             >
-
-                                {/* Profile Image */}
 
                                 <div className="w-10 h-10 rounded-full overflow-hidden border border-gray-300">
 
@@ -305,7 +311,6 @@ function Navbar() {
 
                                 </div>
 
-                                {/* Arrow */}
 
                                 <ChevronDown
                                     size={18}
@@ -319,17 +324,13 @@ function Navbar() {
                             </button>
 
 
-                            {/* =================================================
-                                DROPDOWN
-                            ================================================= */}
+                            {/* DROPDOWN */}
 
                             {openMenu && (
 
                                 <div className="absolute right-0 top-12 w-64 bg-white border border-gray-200 rounded-lg shadow-xl p-4 z-[100]">
 
-                                    {/* =================================================
-                                        USER INFO
-                                    ================================================= */}
+                                    {/* USER INFO */}
 
                                     <div className="flex items-center gap-3 pb-3 border-b border-gray-200">
 
@@ -360,15 +361,11 @@ function Navbar() {
                                     </div>
 
 
-                                    {/* =================================================
-                                        MENU OPTIONS
-                                    ================================================= */}
+                                    {/* MENU OPTIONS */}
 
                                     <div className="flex flex-col mt-3">
 
-                                        {/* =================================================
-                                            VIEW PROFILE
-                                        ================================================= */}
+                                        {/* VIEW PROFILE */}
 
                                         {user?.role === "student" && (
 
@@ -380,9 +377,7 @@ function Navbar() {
                                                 className="flex items-center gap-3 px-3 py-2.5 rounded-md hover:bg-purple-50 hover:text-[#6A38C2] transition cursor-pointer"
                                             >
 
-                                                <User2
-                                                    size={18}
-                                                />
+                                                <User2 size={18} />
 
                                                 <span>
                                                     View Profile
@@ -393,9 +388,7 @@ function Navbar() {
                                         )}
 
 
-                                        {/* =================================================
-                                            LOGOUT
-                                        ================================================= */}
+                                        {/* LOGOUT */}
 
                                         <button
                                             type="button"
@@ -403,9 +396,7 @@ function Navbar() {
                                             className="flex items-center gap-3 px-3 py-2.5 rounded-md hover:bg-red-50 hover:text-red-500 transition cursor-pointer text-left w-full"
                                         >
 
-                                            <LogOut
-                                                size={18}
-                                            />
+                                            <LogOut size={18} />
 
                                             <span>
                                                 Logout
@@ -425,7 +416,229 @@ function Navbar() {
 
                 </div>
 
+
+                {/* =====================================================
+                    MOBILE HAMBURGER BUTTON
+                ===================================================== */}
+
+                <button
+                    type="button"
+                    onClick={() =>
+                        setMobileMenu(!mobileMenu)
+                    }
+                    className="md:hidden w-10 h-10 flex items-center justify-center rounded-lg hover:bg-gray-100 transition"
+                    aria-label="Toggle menu"
+                >
+
+                    {mobileMenu ? (
+                        <X size={26} />
+                    ) : (
+                        <Menu size={26} />
+                    )}
+
+                </button>
+
             </div>
+
+
+            {/* =====================================================
+                MOBILE MENU
+            ===================================================== */}
+
+            {mobileMenu && (
+
+                <div className="md:hidden border-t border-gray-200 bg-white shadow-lg">
+
+                    <div className="px-4 py-4 space-y-2">
+
+                        {/* =================================================
+                            MOBILE NAVIGATION
+                        ================================================= */}
+
+                        {user?.role === "recruiter" ? (
+
+                            <>
+                                <Link
+                                    to="/admin/companies"
+                                    onClick={closeMobileMenu}
+                                    className="block px-4 py-3 rounded-lg font-medium hover:bg-purple-50 hover:text-[#6A38C2] transition"
+                                >
+                                    Companies
+                                </Link>
+
+                                <Link
+                                    to="/admin/jobs"
+                                    onClick={closeMobileMenu}
+                                    className="block px-4 py-3 rounded-lg font-medium hover:bg-purple-50 hover:text-[#6A38C2] transition"
+                                >
+                                    Jobs
+                                </Link>
+                            </>
+
+                        ) : (
+
+                            <>
+
+                                <Link
+                                    to="/"
+                                    onClick={closeMobileMenu}
+                                    className="block px-4 py-3 rounded-lg font-medium hover:bg-purple-50 hover:text-[#6A38C2] transition"
+                                >
+                                    Home
+                                </Link>
+
+                                <Link
+                                    to="/jobs"
+                                    onClick={closeMobileMenu}
+                                    className="block px-4 py-3 rounded-lg font-medium hover:bg-purple-50 hover:text-[#6A38C2] transition"
+                                >
+                                    Jobs
+                                </Link>
+
+                                <Link
+                                    to="/browse"
+                                    onClick={closeMobileMenu}
+                                    className="block px-4 py-3 rounded-lg font-medium hover:bg-purple-50 hover:text-[#6A38C2] transition"
+                                >
+                                    Browse
+                                </Link>
+
+                            </>
+
+                        )}
+
+
+                        {/* =================================================
+                            MOBILE USER SECTION
+                        ================================================= */}
+
+                        <div className="border-t border-gray-200 pt-3 mt-3">
+
+                            {!user ? (
+
+                                <div className="grid grid-cols-2 gap-3">
+
+                                    <Link
+                                        to="/login"
+                                        onClick={closeMobileMenu}
+                                    >
+
+                                        <button
+                                            type="button"
+                                            className="w-full border border-gray-300 px-4 py-3 rounded-lg font-medium hover:bg-gray-100 transition"
+                                        >
+                                            Login
+                                        </button>
+
+                                    </Link>
+
+
+                                    <Link
+                                        to="/signup"
+                                        onClick={closeMobileMenu}
+                                    >
+
+                                        <button
+                                            type="button"
+                                            className="w-full bg-[#6A38C2] text-white px-4 py-3 rounded-lg font-medium hover:bg-[#5b2fa8] transition"
+                                        >
+                                            Signup
+                                        </button>
+
+                                    </Link>
+
+                                </div>
+
+                            ) : (
+
+                                <div>
+
+                                    {/* MOBILE PROFILE INFO */}
+
+                                    <div className="flex items-center gap-3 px-3 py-3 mb-2 bg-gray-50 rounded-lg">
+
+                                        <div className="w-11 h-11 rounded-full overflow-hidden border border-gray-300 flex-shrink-0">
+
+                                            <img
+                                                src={profilePhoto}
+                                                alt="Profile"
+                                                className="w-full h-full object-cover"
+                                                onError={(e) => {
+                                                    e.currentTarget.onerror =
+                                                        null;
+
+                                                    e.currentTarget.src =
+                                                        "https://github.com/shadcn.png";
+                                                }}
+                                            />
+
+                                        </div>
+
+
+                                        <div className="min-w-0">
+
+                                            <h4 className="font-semibold truncate">
+                                                {user?.fullname ||
+                                                    "User"}
+                                            </h4>
+
+                                            <p className="text-sm text-gray-500 truncate">
+                                                {user?.email || ""}
+                                            </p>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    {/* VIEW PROFILE */}
+
+                                    {user?.role === "student" && (
+
+                                        <Link
+                                            to="/profile"
+                                            onClick={closeMobileMenu}
+                                            className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-purple-50 hover:text-[#6A38C2] transition font-medium"
+                                        >
+
+                                            <User2 size={19} />
+
+                                            <span>
+                                                View Profile
+                                            </span>
+
+                                        </Link>
+
+                                    )}
+
+
+                                    {/* LOGOUT */}
+
+                                    <button
+                                        type="button"
+                                        onClick={logoutHandler}
+                                        className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-red-50 hover:text-red-500 transition font-medium text-left"
+                                    >
+
+                                        <LogOut size={19} />
+
+                                        <span>
+                                            Logout
+                                        </span>
+
+                                    </button>
+
+                                </div>
+
+                            )}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            )}
 
         </div>
     );
