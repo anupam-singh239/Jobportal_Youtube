@@ -27,7 +27,7 @@ import AdminJobs from "./components/admin/AdminJobs";
 import PostJob from "./components/admin/PostJob";
 import EditJob from "./components/admin/EditJob";
 import Applicants from "./components/admin/Applicants";
-import ProtectedRoute from "./components/admin/ProtectedRoute";
+
 import AdminProtectedRoute from "./components/admin/AdminProtectedRoute";
 
 import AdminLogin from "./components/admin/AdminLogin";
@@ -87,33 +87,55 @@ const appRouter = createBrowserRouter([
     },
 
     // =====================================================
+    // ADMIN LOGIN
+    // =====================================================
+
+    {
+        path: "/admin-login",
+        element: <AdminLogin />,
+    },
+
+    // =====================================================
+    // ADMIN DASHBOARD
+    // =====================================================
+
+    {
+        path: "/admin-dashboard",
+        element: (
+            <AdminProtectedRoute>
+                <AdminDashboard />
+            </AdminProtectedRoute>
+        ),
+    },
+
+    // =====================================================
     // ADMIN - COMPANIES
     // =====================================================
 
     {
         path: "/admin/companies",
         element: (
-            <ProtectedRoute>
+            <AdminProtectedRoute>
                 <Companies />
-            </ProtectedRoute>
+            </AdminProtectedRoute>
         ),
     },
 
     {
         path: "/admin/companies/create",
         element: (
-            <ProtectedRoute>
+            <AdminProtectedRoute>
                 <CompanyCreate />
-            </ProtectedRoute>
+            </AdminProtectedRoute>
         ),
     },
 
     {
         path: "/admin/companies/:id",
         element: (
-            <ProtectedRoute>
+            <AdminProtectedRoute>
                 <CompanySetup />
-            </ProtectedRoute>
+            </AdminProtectedRoute>
         ),
     },
 
@@ -121,58 +143,41 @@ const appRouter = createBrowserRouter([
     // ADMIN - JOBS
     // =====================================================
 
-    // ADMIN JOB LIST
     {
         path: "/admin/jobs",
         element: (
-            <ProtectedRoute>
+            <AdminProtectedRoute>
                 <AdminJobs />
-            </ProtectedRoute>
+            </AdminProtectedRoute>
         ),
     },
 
-    // CREATE JOB
     {
         path: "/admin/jobs/create",
         element: (
-            <ProtectedRoute>
+            <AdminProtectedRoute>
                 <PostJob />
-            </ProtectedRoute>
+            </AdminProtectedRoute>
         ),
     },
 
-    // EDIT JOB
     {
         path: "/admin/jobs/:id",
         element: (
-            <ProtectedRoute>
+            <AdminProtectedRoute>
                 <EditJob />
-            </ProtectedRoute>
+            </AdminProtectedRoute>
         ),
     },
 
-    // APPLICANTS
     {
         path: "/admin/jobs/:id/applicants",
         element: (
-            <ProtectedRoute>
+            <AdminProtectedRoute>
                 <Applicants />
-            </ProtectedRoute>
+            </AdminProtectedRoute>
         ),
     },
-    {
-    path: "/admin-login",
-    element: <AdminLogin />,
-},
-
-{
-    path: "/admin-dashboard",
-    element: (
-        <AdminProtectedRoute>
-            <AdminDashboard />
-        </AdminProtectedRoute>
-    ),
-},
 ]);
 
 // =====================================================
