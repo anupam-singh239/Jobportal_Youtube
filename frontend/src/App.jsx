@@ -28,6 +28,7 @@ import PostJob from "./components/admin/PostJob";
 import EditJob from "./components/admin/EditJob";
 import Applicants from "./components/admin/Applicants";
 import ProtectedRoute from "./components/admin/ProtectedRoute";
+import AdminProtectedRoute from "./components/admin/AdminProtectedRoute";
 
 import AdminLogin from "./components/admin/AdminLogin";
 import AdminDashboard from "./components/admin/AdminDashboard";
@@ -166,7 +167,11 @@ const appRouter = createBrowserRouter([
 
 {
     path: "/admin-dashboard",
-    element: <AdminDashboard />,
+    element: (
+        <AdminProtectedRoute>
+            <AdminDashboard />
+        </AdminProtectedRoute>
+    ),
 },
 ]);
 

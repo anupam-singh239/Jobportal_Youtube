@@ -10,30 +10,27 @@ import {
 } from "lucide-react";
 import toast from "react-hot-toast";
 
-
-const API_BASE_URL = import.meta.env.DEV
-    ? "http://localhost:8000"
-    : "";
-
+// API Base URL
+const API_BASE_URL =
+    import.meta.env.VITE_API_URL ||
+    (import.meta.env.DEV
+        ? "http://localhost:8000"
+        : "");
 
 const AdminLogin = () => {
 
     const navigate = useNavigate();
-
 
     const [formData, setFormData] = useState({
         email: "",
         password: "",
     });
 
-
     const [showPassword, setShowPassword] =
         useState(false);
 
-
     const [loading, setLoading] =
         useState(false);
-
 
     // ==========================================
     // HANDLE INPUT
@@ -47,7 +44,6 @@ const AdminLogin = () => {
         });
 
     };
-
 
     // ==========================================
     // LOGIN
@@ -69,16 +65,13 @@ const AdminLogin = () => {
                 }
             );
 
-
             if (res.data.success) {
 
                 toast.success(
                     "Admin login successful!"
                 );
 
-                navigate(
-                    "/admin-dashboard"
-                );
+                navigate("/admin-dashboard");
             }
 
         } catch (error) {
@@ -100,13 +93,11 @@ const AdminLogin = () => {
         }
     };
 
-
     return (
 
         <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
 
             <div className="w-full max-w-md">
-
 
                 {/* ================================= */}
                 {/* LOGO */}
@@ -123,11 +114,9 @@ const AdminLogin = () => {
 
                     </div>
 
-
                     <h1 className="text-3xl font-bold text-gray-800 mt-5">
                         Super Admin
                     </h1>
-
 
                     <p className="text-gray-500 mt-2">
                         Login to your admin dashboard
@@ -135,19 +124,16 @@ const AdminLogin = () => {
 
                 </div>
 
-
                 {/* ================================= */}
                 {/* LOGIN CARD */}
                 {/* ================================= */}
 
                 <div className="bg-white rounded-2xl shadow-xl p-7">
 
-
                     <form
                         onSubmit={handleSubmit}
                         className="space-y-5"
                     >
-
 
                         {/* EMAIL */}
 
@@ -157,7 +143,6 @@ const AdminLogin = () => {
                                 Admin Email
                             </label>
 
-
                             <div className="relative">
 
                                 <Mail
@@ -165,16 +150,11 @@ const AdminLogin = () => {
                                     className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
                                 />
 
-
                                 <input
                                     type="email"
                                     name="email"
-                                    value={
-                                        formData.email
-                                    }
-                                    onChange={
-                                        handleChange
-                                    }
+                                    value={formData.email}
+                                    onChange={handleChange}
                                     placeholder="Enter admin email"
                                     required
                                     className="w-full border border-gray-300 rounded-lg py-3 pl-11 pr-4 outline-none focus:ring-2 focus:ring-blue-500"
@@ -184,7 +164,6 @@ const AdminLogin = () => {
 
                         </div>
 
-
                         {/* PASSWORD */}
 
                         <div>
@@ -193,14 +172,12 @@ const AdminLogin = () => {
                                 Password
                             </label>
 
-
                             <div className="relative">
 
                                 <Lock
                                     size={20}
                                     className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
                                 />
-
 
                                 <input
                                     type={
@@ -209,17 +186,12 @@ const AdminLogin = () => {
                                             : "password"
                                     }
                                     name="password"
-                                    value={
-                                        formData.password
-                                    }
-                                    onChange={
-                                        handleChange
-                                    }
+                                    value={formData.password}
+                                    onChange={handleChange}
                                     placeholder="Enter admin password"
                                     required
                                     className="w-full border border-gray-300 rounded-lg py-3 pl-11 pr-12 outline-none focus:ring-2 focus:ring-blue-500"
                                 />
-
 
                                 <button
                                     type="button"
@@ -232,13 +204,9 @@ const AdminLogin = () => {
                                 >
 
                                     {showPassword ? (
-                                        <EyeOff
-                                            size={20}
-                                        />
+                                        <EyeOff size={20} />
                                     ) : (
-                                        <Eye
-                                            size={20}
-                                        />
+                                        <Eye size={20} />
                                     )}
 
                                 </button>
@@ -246,7 +214,6 @@ const AdminLogin = () => {
                             </div>
 
                         </div>
-
 
                         {/* LOGIN BUTTON */}
 
@@ -271,6 +238,5 @@ const AdminLogin = () => {
         </div>
     );
 };
-
 
 export default AdminLogin;
