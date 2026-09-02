@@ -4,7 +4,7 @@ import Navbar from "../shared/Navbar";
 import axios from "axios";
 import { USER_API_END_POINT } from "@/utils/constant";
 import { useDispatch, useSelector } from "react-redux";
-import { setLoading, setUser } from "@/redux/authSlice";
+import { setUser } from "@/redux/authSlice";
 import { Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -20,9 +20,13 @@ const Signup = () => {
 
     const navigate = useNavigate();
 
-    const { loading, user } = useSelector(
+    // Only user comes from Redux.
+    // Loading is now local to this page.
+    const { user } = useSelector(
         (store) => store.auth
     );
+
+    const [loading, setLoading] = useState(false);
 
     const dispatch = useDispatch();
 
@@ -44,12 +48,16 @@ const Signup = () => {
         e.preventDefault();
 
         if (!input.fullname.trim()) {
-            toast.error("Please enter your full name.");
+            toast.error(
+                "Please enter your full name."
+            );
             return;
         }
 
         if (!input.email.trim()) {
-            toast.error("Please enter your email.");
+            toast.error(
+                "Please enter your email."
+            );
             return;
         }
 
@@ -61,12 +69,16 @@ const Signup = () => {
         }
 
         if (!input.password) {
-            toast.error("Please enter your password.");
+            toast.error(
+                "Please enter your password."
+            );
             return;
         }
 
         if (!input.role) {
-            toast.error("Please select your role.");
+            toast.error(
+                "Please select your role."
+            );
             return;
         }
 
@@ -105,7 +117,7 @@ const Signup = () => {
         }
 
         try {
-            dispatch(setLoading(true));
+            setLoading(true);
 
             const res = await axios.post(
                 `${USER_API_END_POINT}/register`,
@@ -141,7 +153,7 @@ const Signup = () => {
                     "Signup failed."
             );
         } finally {
-            dispatch(setLoading(false));
+            setLoading(false);
         }
     };
 

@@ -356,7 +356,7 @@ const AdminDashboard = () => {
                 "Admin logout successful."
             );
 
-            navigate("/admin-login", {
+            navigate("/", {
                 replace: true,
             });
         } catch (error) {
@@ -365,7 +365,7 @@ const AdminDashboard = () => {
                 error
             );
 
-            navigate("/admin-login", {
+            navigate("/", {
                 replace: true,
             });
         }
