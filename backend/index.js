@@ -16,41 +16,108 @@ const app = express();
 
 const _dirname = path.resolve();
 
-// Middleware
+// ======================================================
+// MIDDLEWARE
+// ======================================================
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieparser());
 
+// ======================================================
+// CORS
+// ======================================================
+
 const corsOptions = {
     origin: [
+        "http://localhost:5173",
         "https://jobportal.buzz",
         "https://www.jobportal.buzz",
-        "https://jobportal-youtube-3.onrender.com"
     ],
-    credentials: true
+    credentials: true,
 };
 
 app.use(cors(corsOptions));
 
-const PORT = process.env.PORT || 3000;
+// ======================================================
+// PORT
+// ======================================================
 
-// APIs
-app.use("/api/v1/user", userRoute);
-app.use("/api/v1/company", CompanyRoute);
-app.use("/api/v1/job", jobRoute);
-app.use("/api/v1/application", applicationRoute);
-app.use("/api/v1/admin", adminRoute);
+const PORT = process.env.PORT || 8000;
 
-// Serve frontend
-app.use(express.static(path.join(_dirname, "/frontend/dist")));
+// ======================================================
+// API ROUTES
+// ======================================================
 
-app.get("/*splat", (_, res) => {
-    res.sendFile(
-        path.resolve(_dirname, "frontend", "dist", "index.html")
-    );
-});
+app.use(
+    "/api/v1/user",
+    userRoute
+);
 
-app.listen(PORT, () => {
-    connectDB();
-    console.log(`Server running at port ${PORT}`);
-});
+app.use(
+    "/api/v1/company",
+    CompanyRoute
+);
+
+app.use(
+    "/api/v1/job",
+    jobRoute
+);
+
+app.use(
+    "/api/v1/application",
+    applicationRoute
+);
+
+// IMPORTANT: ADMIN ROUTE
+app.use(
+    "/api/v1/admin",
+    adminRoute
+);
+
+// ======================================================
+// FRONTEND
+// ======================================================
+
+app.use(
+    express.static(
+        path.join(
+            _dirname,
+            "frontend",
+            "dist"
+        )
+    )
+);
+
+// ======================================================
+// FRONTEND ROUTING
+// ======================================================
+
+app.get(
+    "/*splat",
+    (_, res) => {
+        res.sendFile(
+            path.resolve(
+                _dirname,
+                "frontend",
+                "dist",
+                "index.html"
+            )
+        );
+    }
+);
+
+// ======================================================
+// START SERVER
+// ======================================================
+
+app.listen(
+    PORT,
+    () => {
+        connectDB();
+
+        console.log(
+            `Server running at port ${PORT}`
+        );
+    }
+);
