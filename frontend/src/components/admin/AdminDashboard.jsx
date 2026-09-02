@@ -14,7 +14,6 @@ import {
     X,
     MoreVertical,
     CalendarDays,
-    ShieldCheck,
     TrendingUp,
     ArrowLeft,
     Camera,
@@ -31,21 +30,100 @@ const API_BASE_URL =
     "https://jobportal-youtube-8f7p.onrender.com";
 
 // =====================================================
+// JOB PORTAL LOGO
+// Same logo as main Navbar.jsx
+// =====================================================
+
+const JobPortalLogo = ({
+    width = 48,
+    height = 42,
+}) => {
+    return (
+        <svg
+            width={width}
+            height={height}
+            viewBox="0 0 48 42"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+        >
+            {/* Black Briefcase Handle */}
+
+            <path
+                d="M15 14V9C15 6.8 16.8 5 19 5H29C31.2 5 33 6.8 33 9V14"
+                stroke="#111111"
+                strokeWidth="4.5"
+                strokeLinecap="round"
+            />
+
+            {/* Black Briefcase */}
+
+            <path
+                d="M7 14C7 11.8 8.8 10 11 10H37C39.2 10 41 11.8 41 14V30C41 32.2 39.2 34 37 34H11C8.8 34 7 32.2 7 30V14Z"
+                fill="#111111"
+            />
+
+            {/* White Horizontal Strap */}
+
+            <path
+                d="M7 20H41"
+                stroke="white"
+                strokeWidth="3"
+            />
+
+            {/* White Center Lock */}
+
+            <rect
+                x="20"
+                y="17"
+                width="8"
+                height="7"
+                rx="1.5"
+                fill="white"
+            />
+
+            {/* Red Career Growth Arrow */}
+
+            <path
+                d="M10 32C17 31 23 28 28 24C34 19 38 14 43 9"
+                stroke="#F83002"
+                strokeWidth="4"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            />
+
+            {/* Red Arrow Head */}
+
+            <path
+                d="M37 9H43V15"
+                stroke="#F83002"
+                strokeWidth="4"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            />
+        </svg>
+    );
+};
+
+// =====================================================
 // ADMIN DASHBOARD
 // =====================================================
 
 const AdminDashboard = () => {
     const navigate = useNavigate();
 
-    const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [sidebarOpen, setSidebarOpen] =
+        useState(false);
 
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] =
+        useState(true);
 
     // Current section
+
     const [activeSection, setActiveSection] =
         useState("dashboard");
 
     // Selected company/job
+
     const [selectedCompany, setSelectedCompany] =
         useState(null);
 
@@ -65,7 +143,6 @@ const AdminDashboard = () => {
 
     // =====================================================
     // RECENT DATA
-    // Dashboard ke liye sirf recent 5
     // =====================================================
 
     const [recentCompanies, setRecentCompanies] =
@@ -79,7 +156,6 @@ const AdminDashboard = () => {
 
     // =====================================================
     // ALL DATA
-    // Sidebar sections ke liye saare records
     // =====================================================
 
     const [companies, setCompanies] =
@@ -99,7 +175,6 @@ const AdminDashboard = () => {
 
     // =====================================================
     // PROFILE PHOTO
-    // localStorage se photo refresh ke baad bhi rahegi
     // =====================================================
 
     const [profilePhoto, setProfilePhoto] =
@@ -297,16 +372,6 @@ const AdminDashboard = () => {
                 error
             );
 
-            console.error(
-                "Status:",
-                error.response?.status
-            );
-
-            console.error(
-                "Response:",
-                error.response?.data
-            );
-
             if (
                 error.response?.status === 401 ||
                 error.response?.status === 403
@@ -484,7 +549,6 @@ const AdminDashboard = () => {
 
         reader.readAsDataURL(file);
 
-        // Same file dobara select kar sake
         event.target.value = "";
     };
 
@@ -514,16 +578,32 @@ const AdminDashboard = () => {
                 }
             `}
         >
-            {/* LOGO */}
 
-            <div className="h-20 flex items-center px-6 border-b border-white/10">
-                <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center">
-                    <ShieldCheck size={25} />
+            {/* =================================================
+                LOGO
+            ================================================= */}
+
+            <div className="h-20 flex items-center px-5 border-b border-white/10">
+
+                <div className="flex items-center gap-2">
+
+                    <div className="bg-white rounded-lg w-11 h-11 flex items-center justify-center overflow-hidden">
+
+                        <JobPortalLogo
+                            width={42}
+                            height={37}
+                        />
+
+                    </div>
+
+                    <span className="text-xl font-bold">
+                        Job{" "}
+                        <span className="text-[#F83002]">
+                            Portal
+                        </span>
+                    </span>
+
                 </div>
-
-                <span className="text-2xl font-bold ml-3">
-                    JobPortal
-                </span>
 
                 <button
                     onClick={() =>
@@ -533,6 +613,7 @@ const AdminDashboard = () => {
                 >
                     <X size={24} />
                 </button>
+
             </div>
 
             {/* MENU */}
@@ -769,6 +850,7 @@ const AdminDashboard = () => {
                         Logout
                     </span>
                 </button>
+
             </div>
 
             {/* ADMIN PROFILE */}
@@ -784,6 +866,7 @@ const AdminDashboard = () => {
                     p-3
                 "
             >
+
                 <div className="flex items-center gap-3">
 
                     <div
@@ -798,6 +881,7 @@ const AdminDashboard = () => {
                             overflow-hidden
                         "
                     >
+
                         {profilePhoto ? (
                             <img
                                 src={
@@ -816,6 +900,7 @@ const AdminDashboard = () => {
                                 size={24}
                             />
                         )}
+
                     </div>
 
                     <div className="overflow-hidden">
@@ -829,8 +914,11 @@ const AdminDashboard = () => {
                         </p>
 
                     </div>
+
                 </div>
+
             </div>
+
         </aside>
     );
 
@@ -852,6 +940,7 @@ const AdminDashboard = () => {
                 lg:px-8
             "
         >
+
             <div className="flex items-center gap-4">
 
                 <button
@@ -863,8 +952,30 @@ const AdminDashboard = () => {
                     <Menu size={26} />
                 </button>
 
+                {/* MOBILE / TOP BRAND */}
+
+                <div className="flex items-center gap-2 lg:hidden">
+
+                    <JobPortalLogo
+                        width={38}
+                        height={34}
+                    />
+
+                    <span className="text-lg font-bold text-gray-900">
+                        Job{" "}
+                        <span className="text-[#F83002]">
+                            Portal
+                        </span>
+                    </span>
+
+                </div>
+
+                {/* DESKTOP SECTION TITLE */}
+
                 <h1
                     className="
+                        hidden
+                        lg:block
                         text-xl
                         sm:text-2xl
                         font-bold
@@ -903,6 +1014,7 @@ const AdminDashboard = () => {
                         "profile" &&
                         "Profile"}
                 </h1>
+
             </div>
 
             <div className="flex items-center gap-3">
@@ -919,6 +1031,7 @@ const AdminDashboard = () => {
                         overflow-hidden
                     "
                 >
+
                     {profilePhoto ? (
                         <img
                             src={
@@ -937,6 +1050,7 @@ const AdminDashboard = () => {
                             className="text-gray-600"
                         />
                     )}
+
                 </div>
 
                 <div className="hidden sm:block">
@@ -946,7 +1060,9 @@ const AdminDashboard = () => {
                     </p>
 
                 </div>
+
             </div>
+
         </header>
     );
 
@@ -974,6 +1090,7 @@ const AdminDashboard = () => {
                     gap-4
                 "
             >
+
                 <div>
 
                     <h2
@@ -1016,6 +1133,7 @@ const AdminDashboard = () => {
                         }
                     )}
                 </div>
+
             </div>
 
             {/* STAT CARDS */}
@@ -1050,6 +1168,7 @@ const AdminDashboard = () => {
                         transition
                     "
                 >
+
                     <div className="flex items-center justify-between">
 
                         <div>
@@ -1078,6 +1197,7 @@ const AdminDashboard = () => {
                         </div>
 
                     </div>
+
                 </button>
 
                 {/* JOBS */}
@@ -1099,6 +1219,7 @@ const AdminDashboard = () => {
                         transition
                     "
                 >
+
                     <div className="flex items-center justify-between">
 
                         <div>
@@ -1127,6 +1248,7 @@ const AdminDashboard = () => {
                         </div>
 
                     </div>
+
                 </button>
 
                 {/* USERS */}
@@ -1148,6 +1270,7 @@ const AdminDashboard = () => {
                         transition
                     "
                 >
+
                     <div className="flex items-center justify-between">
 
                         <div>
@@ -1176,6 +1299,7 @@ const AdminDashboard = () => {
                         </div>
 
                     </div>
+
                 </button>
 
                 {/* APPLICATIONS */}
@@ -1197,6 +1321,7 @@ const AdminDashboard = () => {
                         transition
                     "
                 >
+
                     <div className="flex items-center justify-between">
 
                         <div>
@@ -1225,6 +1350,7 @@ const AdminDashboard = () => {
                         </div>
 
                     </div>
+
                 </button>
 
             </div>
@@ -1288,6 +1414,7 @@ const AdminDashboard = () => {
                                             transition
                                         "
                                     >
+
                                         <div
                                             className="
                                                 w-11
@@ -1349,6 +1476,7 @@ const AdminDashboard = () => {
                         )}
 
                     </div>
+
                 </div>
 
                 {/* RECENT USERS */}
@@ -1470,6 +1598,7 @@ const AdminDashboard = () => {
                         )}
 
                     </div>
+
                 </div>
 
                 {/* RECENT JOBS */}
@@ -1618,6 +1747,7 @@ const AdminDashboard = () => {
                         )}
 
                     </div>
+
                 </div>
 
             </div>
@@ -1625,7 +1755,7 @@ const AdminDashboard = () => {
     );
 
     // =====================================================
-    // COMPANIES SECTION - ALL COMPANIES
+    // COMPANIES SECTION
     // =====================================================
 
     const CompaniesSection = () => (
@@ -1889,13 +2019,16 @@ const AdminDashboard = () => {
                         </div>
 
                     </div>
+
                 </div>
+
             </div>
+
         </div>
     );
 
     // =====================================================
-    // JOBS SECTION - ALL JOBS
+    // JOBS SECTION
     // =====================================================
 
     const JobsSection = () => (
@@ -2024,6 +2157,7 @@ const AdminDashboard = () => {
                 )}
 
             </div>
+
         </div>
     );
 
@@ -2151,12 +2285,14 @@ const AdminDashboard = () => {
                     </div>
 
                 </div>
+
             </div>
+
         </div>
     );
 
     // =====================================================
-    // USERS SECTION - ALL USERS
+    // USERS SECTION
     // =====================================================
 
     const UsersSection = () => (
@@ -2278,11 +2414,12 @@ const AdminDashboard = () => {
                 )}
 
             </div>
+
         </div>
     );
 
     // =====================================================
-    // APPLICATIONS SECTION - ALL APPLICATIONS
+    // APPLICATIONS SECTION
     // =====================================================
 
     const ApplicationsSection = () => {
@@ -2292,7 +2429,9 @@ const AdminDashboard = () => {
                 applicationId,
                 status
             ) => {
+
                 try {
+
                     const res =
                         await axios.put(
                             `${API_BASE_URL}/api/v1/admin/applications/${applicationId}/status`,
@@ -2308,6 +2447,7 @@ const AdminDashboard = () => {
                     if (
                         res.data?.success
                     ) {
+
                         toast.success(
                             "Application status updated."
                         );
@@ -2327,8 +2467,11 @@ const AdminDashboard = () => {
                                             : application
                                 )
                         );
+
                     }
+
                 } catch (error) {
+
                     console.error(
                         "Update Application Error:",
                         error
@@ -2453,7 +2596,7 @@ const AdminDashboard = () => {
                                                 )}
                                             </div>
 
-                                            {/* APPLICANT DETAILS */}
+                                            {/* DETAILS */}
 
                                             <div className="flex-1 min-w-0">
 
@@ -2515,7 +2658,7 @@ const AdminDashboard = () => {
 
                                             </div>
 
-                                            {/* ACTION BUTTONS */}
+                                            {/* ACTIONS */}
 
                                             <div className="flex gap-2">
 
@@ -2647,6 +2790,7 @@ const AdminDashboard = () => {
                             border-white
                         "
                     >
+
                         <Camera
                             size={20}
                         />
@@ -2659,6 +2803,7 @@ const AdminDashboard = () => {
                                 handleProfilePhoto
                             }
                         />
+
                     </label>
 
                 </div>
@@ -2678,6 +2823,7 @@ const AdminDashboard = () => {
                         hover:bg-blue-700
                     "
                 >
+
                     <Camera
                         size={18}
                     />
@@ -2692,9 +2838,11 @@ const AdminDashboard = () => {
                             handleProfilePhoto
                         }
                     />
+
                 </label>
 
             </div>
+
         </div>
     );
 
@@ -2757,6 +2905,7 @@ const AdminDashboard = () => {
     // =====================================================
 
     if (loading) {
+
         return (
             <div className="min-h-screen bg-gray-100 flex items-center justify-center">
 
@@ -2780,6 +2929,7 @@ const AdminDashboard = () => {
                     </p>
 
                 </div>
+
             </div>
         );
     }
