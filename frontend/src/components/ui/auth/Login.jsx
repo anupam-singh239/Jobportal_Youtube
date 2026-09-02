@@ -6,6 +6,7 @@ import { USER_API_END_POINT } from "@/utils/constant";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading, setUser } from "@/redux/authSlice";
 import { Loader2 } from "lucide-react";
+import toast from "react-hot-toast";
 
 const Login = () => {
     const [input, setInput] = useState({
@@ -31,6 +32,21 @@ const Login = () => {
     const submitHandler = async (e) => {
         e.preventDefault();
 
+        if (!input.email.trim()) {
+            toast.error("Please enter your email.");
+            return;
+        }
+
+        if (!input.password) {
+            toast.error("Please enter your password.");
+            return;
+        }
+
+        if (!input.role) {
+            toast.error("Please select your role.");
+            return;
+        }
+
         try {
             dispatch(setLoading(true));
 
@@ -39,7 +55,8 @@ const Login = () => {
                 input,
                 {
                     headers: {
-                        "Content-Type": "application/json",
+                        "Content-Type":
+                            "application/json",
                     },
                     withCredentials: true,
                 }
@@ -47,15 +64,27 @@ const Login = () => {
 
             if (res.data.success) {
                 dispatch(setUser(res.data.user));
-                navigate("/");
-                console.log(res.data.message);
+
+                toast.success(
+                    res.data.message ||
+                        "Login successful!"
+                );
+
+                navigate("/", {
+                    replace: true,
+                });
+            } else {
+                toast.error(
+                    res.data?.message ||
+                        "Login failed."
+                );
             }
         } catch (error) {
-            console.log(error);
+            console.log("Login Error:", error);
 
-            console.log(
+            toast.error(
                 error.response?.data?.message ||
-                    "Login failed"
+                    "Login failed."
             );
         } finally {
             dispatch(setLoading(false));
@@ -64,7 +93,9 @@ const Login = () => {
 
     useEffect(() => {
         if (user) {
-            navigate("/");
+            navigate("/", {
+                replace: true,
+            });
         }
     }, [user, navigate]);
 
@@ -196,42 +227,38 @@ const Login = () => {
 
                     {/* ================= LOGIN BUTTON ================= */}
 
-                    {loading ? (
-                        <button
-                            type="button"
-                            disabled
-                            className="
-                                w-full
-                                my-4
-                                flex
-                                items-center
-                                justify-center
-                                bg-gray-400
-                                text-white
-                                py-2
-                                rounded-md
-                            "
-                        >
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <button
+                        type="submit"
+                        disabled={loading}
+                        className="
+                            w-full
+                            my-4
+                            flex
+                            items-center
+                            justify-center
+                            bg-[#6A38C2]
+                            hover:bg-[#5b2fa8]
+                            disabled:bg-gray-400
+                            text-white
+                            py-2.5
+                            rounded-md
+                            transition
+                            cursor-pointer
+                            disabled:cursor-not-allowed
+                        "
+                    >
+                        {loading ? (
+                            <>
+                                <Loader2
+                                    className="mr-2 h-4 w-4 animate-spin"
+                                />
 
-                            Please wait
-                        </button>
-                    ) : (
-                        <button
-                            type="submit"
-                            className="
-                                w-full
-                                bg-[#6A38C2]
-                                hover:bg-[#5b2fa8]
-                                text-white
-                                py-2.5
-                                rounded-md
-                                transition
-                            "
-                        >
-                            Login
-                        </button>
-                    )}
+                                Please wait...
+                            </>
+                        ) : (
+                            "Login"
+                        )}
+                    </button>
 
                     {/* ================= SIGNUP ================= */}
 

@@ -6,6 +6,7 @@ import { USER_API_END_POINT } from "@/utils/constant";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading, setUser } from "@/redux/authSlice";
 import { Loader2 } from "lucide-react";
+import toast from "react-hot-toast";
 
 const Signup = () => {
     const [input, setInput] = useState({
@@ -41,6 +42,33 @@ const Signup = () => {
 
     const submitHandler = async (e) => {
         e.preventDefault();
+
+        if (!input.fullname.trim()) {
+            toast.error("Please enter your full name.");
+            return;
+        }
+
+        if (!input.email.trim()) {
+            toast.error("Please enter your email.");
+            return;
+        }
+
+        if (!input.phoneNumber.trim()) {
+            toast.error(
+                "Please enter your phone number."
+            );
+            return;
+        }
+
+        if (!input.password) {
+            toast.error("Please enter your password.");
+            return;
+        }
+
+        if (!input.role) {
+            toast.error("Please select your role.");
+            return;
+        }
 
         const formData = new FormData();
 
@@ -88,23 +116,29 @@ const Signup = () => {
             );
 
             if (res.data.success) {
-                navigate("/login");
+                toast.success(
+                    res.data.message ||
+                        "Signup successful!"
+                );
 
-                console.log(
-                    res.data.message
+                navigate("/login", {
+                    replace: true,
+                });
+            } else {
+                toast.error(
+                    res.data?.message ||
+                        "Signup failed."
                 );
             }
         } catch (error) {
-            console.log(error);
-
             console.log(
-                error.response?.data?.message ||
-                    "Signup failed"
+                "Signup Error:",
+                error
             );
 
-            console.log(
-                "STATUS:",
-                error.response?.status
+            toast.error(
+                error.response?.data?.message ||
+                    "Signup failed."
             );
         } finally {
             dispatch(setLoading(false));
@@ -113,7 +147,9 @@ const Signup = () => {
 
     useEffect(() => {
         if (user) {
-            navigate("/");
+            navigate("/", {
+                replace: true,
+            });
         }
     }, [user, navigate]);
 
@@ -334,42 +370,38 @@ const Signup = () => {
 
                     {/* ================= SIGNUP BUTTON ================= */}
 
-                    {loading ? (
-                        <button
-                            type="button"
-                            disabled
-                            className="
-                                w-full
-                                my-4
-                                flex
-                                items-center
-                                justify-center
-                                bg-gray-400
-                                text-white
-                                py-2.5
-                                rounded-md
-                            "
-                        >
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <button
+                        type="submit"
+                        disabled={loading}
+                        className="
+                            w-full
+                            my-4
+                            flex
+                            items-center
+                            justify-center
+                            bg-[#6A38C2]
+                            hover:bg-[#5b2fa8]
+                            disabled:bg-gray-400
+                            text-white
+                            py-2.5
+                            rounded-md
+                            transition
+                            cursor-pointer
+                            disabled:cursor-not-allowed
+                        "
+                    >
+                        {loading ? (
+                            <>
+                                <Loader2
+                                    className="mr-2 h-4 w-4 animate-spin"
+                                />
 
-                            Please wait
-                        </button>
-                    ) : (
-                        <button
-                            type="submit"
-                            className="
-                                w-full
-                                bg-[#6A38C2]
-                                hover:bg-[#5b2fa8]
-                                text-white
-                                py-2.5
-                                rounded-md
-                                transition
-                            "
-                        >
-                            Signup
-                        </button>
-                    )}
+                                Please wait...
+                            </>
+                        ) : (
+                            "Signup"
+                        )}
+                    </button>
 
                     {/* ================= LOGIN ================= */}
 
