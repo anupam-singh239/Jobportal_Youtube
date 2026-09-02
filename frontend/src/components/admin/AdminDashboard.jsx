@@ -117,12 +117,8 @@ const AdminDashboard = () => {
     const [loading, setLoading] =
         useState(true);
 
-    // Current section
-
     const [activeSection, setActiveSection] =
         useState("dashboard");
-
-    // Selected company/job
 
     const [selectedCompany, setSelectedCompany] =
         useState(null);
@@ -395,12 +391,42 @@ const AdminDashboard = () => {
     };
 
     // =====================================================
-    // LOAD DATA
+    // LOAD DATA + PREVENT BROWSER BACK
     // =====================================================
 
     useEffect(() => {
         fetchDashboardData();
         fetchAllAdminData();
+
+        // =================================================
+        // PREVENT CHROME BACK FROM RETURNING TO ADMIN LOGIN
+        // =================================================
+
+        window.history.pushState(
+            null,
+            "",
+            window.location.href
+        );
+
+        const handlePopState = () => {
+            window.history.pushState(
+                null,
+                "",
+                window.location.href
+            );
+        };
+
+        window.addEventListener(
+            "popstate",
+            handlePopState
+        );
+
+        return () => {
+            window.removeEventListener(
+                "popstate",
+                handlePopState
+            );
+        };
     }, []);
 
     // =====================================================
@@ -579,9 +605,7 @@ const AdminDashboard = () => {
             `}
         >
 
-            {/* =================================================
-                LOGO
-            ================================================= */}
+            {/* LOGO */}
 
             <div className="h-20 flex items-center px-5 border-b border-white/10">
 
@@ -952,7 +976,7 @@ const AdminDashboard = () => {
                     <Menu size={26} />
                 </button>
 
-                {/* MOBILE / TOP BRAND */}
+                {/* MOBILE BRAND */}
 
                 <div className="flex items-center gap-2 lg:hidden">
 
@@ -970,7 +994,7 @@ const AdminDashboard = () => {
 
                 </div>
 
-                {/* DESKTOP SECTION TITLE */}
+                {/* DESKTOP TITLE */}
 
                 <h1
                     className="
@@ -1072,8 +1096,6 @@ const AdminDashboard = () => {
 
     const DashboardSection = () => (
         <>
-            {/* WELCOME */}
-
             <div
                 className="
                     bg-white
@@ -1135,8 +1157,6 @@ const AdminDashboard = () => {
                 </div>
 
             </div>
-
-            {/* STAT CARDS */}
 
             <div
                 className="
@@ -1354,8 +1374,6 @@ const AdminDashboard = () => {
                 </button>
 
             </div>
-
-            {/* LOWER SECTION */}
 
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
 
@@ -2559,8 +2577,6 @@ const AdminDashboard = () => {
                                             "
                                         >
 
-                                            {/* APPLICANT IMAGE */}
-
                                             <div
                                                 className="
                                                     w-12
@@ -2596,8 +2612,6 @@ const AdminDashboard = () => {
                                                 )}
                                             </div>
 
-                                            {/* DETAILS */}
-
                                             <div className="flex-1 min-w-0">
 
                                                 <p className="font-bold text-gray-800">
@@ -2622,15 +2636,11 @@ const AdminDashboard = () => {
 
                                             </div>
 
-                                            {/* DATE */}
-
                                             <div className="text-sm text-gray-500 whitespace-nowrap">
                                                 {formatDate(
                                                     application.createdAt
                                                 )}
                                             </div>
-
-                                            {/* STATUS */}
 
                                             <div>
 
@@ -2657,8 +2667,6 @@ const AdminDashboard = () => {
                                                 </span>
 
                                             </div>
-
-                                            {/* ACTIONS */}
 
                                             <div className="flex gap-2">
 
