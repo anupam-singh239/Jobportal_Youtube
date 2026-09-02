@@ -255,6 +255,20 @@ function Navbar() {
 
                         <div className="flex items-center gap-2">
 
+                            {/* ADMIN LOGIN */}
+
+                            <Link to="/admin-login">
+
+                                <button
+                                    type="button"
+                                    className="border border-[#F83002] text-[#F83002] px-3 py-1.5 rounded-md text-sm hover:bg-red-50 transition cursor-pointer"
+                                >
+                                    Admin Login
+                                </button>
+
+                            </Link>
+
+
                             {/* USER LOGIN */}
 
                             <Link to="/login">
@@ -264,20 +278,6 @@ function Navbar() {
                                     className="border border-gray-300 px-4 py-2 rounded-md hover:bg-gray-100 transition cursor-pointer"
                                 >
                                     Login
-                                </button>
-
-                            </Link>
-
-
-                            {/* ADMIN LOGIN */}
-
-                            <Link to="/admin-login">
-
-                                <button
-                                    type="button"
-                                    className="border border-[#F83002] text-[#F83002] px-4 py-2 rounded-md hover:bg-red-50 transition cursor-pointer"
-                                >
-                                    Admin Login
                                 </button>
 
                             </Link>
@@ -536,6 +536,23 @@ function Navbar() {
 
                                 <div className="grid grid-cols-1 gap-3">
 
+                                    {/* ADMIN LOGIN */}
+
+                                    <Link
+                                        to="/admin-login"
+                                        onClick={closeMobileMenu}
+                                    >
+
+                                        <button
+                                            type="button"
+                                            className="w-full border border-[#F83002] text-[#F83002] px-3 py-2 rounded-lg text-sm font-medium hover:bg-red-50 transition"
+                                        >
+                                            Admin Login
+                                        </button>
+
+                                    </Link>
+
+
                                     {/* USER LOGIN */}
 
                                     <Link
@@ -548,23 +565,6 @@ function Navbar() {
                                             className="w-full border border-gray-300 px-4 py-3 rounded-lg font-medium hover:bg-gray-100 transition"
                                         >
                                             Login
-                                        </button>
-
-                                    </Link>
-
-
-                                    {/* ADMIN LOGIN */}
-
-                                    <Link
-                                        to="/admin-login"
-                                        onClick={closeMobileMenu}
-                                    >
-
-                                        <button
-                                            type="button"
-                                            className="w-full border border-[#F83002] text-[#F83002] px-4 py-3 rounded-lg font-medium hover:bg-red-50 transition"
-                                        >
-                                            Admin Login
                                         </button>
 
                                     </Link>
