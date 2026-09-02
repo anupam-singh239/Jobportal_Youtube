@@ -42,13 +42,20 @@ const AdminDashboard = () => {
     const [loading, setLoading] = useState(true);
 
     // Current section
-    const [activeSection, setActiveSection] = useState("dashboard");
+    const [activeSection, setActiveSection] =
+        useState("dashboard");
 
     // Selected company/job
-    const [selectedCompany, setSelectedCompany] = useState(null);
-    const [selectedJob, setSelectedJob] = useState(null);
+    const [selectedCompany, setSelectedCompany] =
+        useState(null);
 
-    // Stats
+    const [selectedJob, setSelectedJob] =
+        useState(null);
+
+    // =====================================================
+    // STATS
+    // =====================================================
+
     const [stats, setStats] = useState({
         companies: 0,
         jobs: 0,
@@ -56,13 +63,52 @@ const AdminDashboard = () => {
         applications: 0,
     });
 
-    // Data
-    const [recentCompanies, setRecentCompanies] = useState([]);
-    const [recentJobs, setRecentJobs] = useState([]);
-    const [recentUsers, setRecentUsers] = useState([]);
+    // =====================================================
+    // RECENT DATA
+    // Dashboard ke liye sirf recent 5
+    // =====================================================
 
-    // Profile photo
-    const [profilePhoto, setProfilePhoto] = useState(null);
+    const [recentCompanies, setRecentCompanies] =
+        useState([]);
+
+    const [recentJobs, setRecentJobs] =
+        useState([]);
+
+    const [recentUsers, setRecentUsers] =
+        useState([]);
+
+    // =====================================================
+    // ALL DATA
+    // Sidebar sections ke liye saare records
+    // =====================================================
+
+    const [companies, setCompanies] =
+        useState([]);
+
+    const [jobs, setJobs] =
+        useState([]);
+
+    const [users, setUsers] =
+        useState([]);
+
+    const [applications, setApplications] =
+        useState([]);
+
+    const [sectionLoading, setSectionLoading] =
+        useState(false);
+
+    // =====================================================
+    // PROFILE PHOTO
+    // localStorage se photo refresh ke baad bhi rahegi
+    // =====================================================
+
+    const [profilePhoto, setProfilePhoto] =
+        useState(
+            () =>
+                localStorage.getItem(
+                    "adminProfilePhoto"
+                ) || null
+        );
 
     // =====================================================
     // FETCH DASHBOARD DATA
@@ -79,7 +125,10 @@ const AdminDashboard = () => {
                 }
             );
 
-            console.log("Dashboard API Response:", res.data);
+            console.log(
+                "Dashboard API Response:",
+                res.data
+            );
 
             if (res.data?.success) {
                 setStats(
@@ -109,7 +158,10 @@ const AdminDashboard = () => {
                 );
             }
         } catch (error) {
-            console.error("Dashboard Error:", error);
+            console.error(
+                "Dashboard Error:",
+                error
+            );
 
             console.error(
                 "Dashboard Status:",
@@ -143,8 +195,147 @@ const AdminDashboard = () => {
         }
     };
 
+    // =====================================================
+    // FETCH ALL ADMIN DATA
+    // =====================================================
+
+    const fetchAllAdminData = async () => {
+        try {
+            setSectionLoading(true);
+
+            const [
+                companiesRes,
+                jobsRes,
+                usersRes,
+                applicationsRes,
+            ] = await Promise.all([
+                axios.get(
+                    `${API_BASE_URL}/api/v1/admin/companies`,
+                    {
+                        withCredentials: true,
+                    }
+                ),
+
+                axios.get(
+                    `${API_BASE_URL}/api/v1/admin/jobs`,
+                    {
+                        withCredentials: true,
+                    }
+                ),
+
+                axios.get(
+                    `${API_BASE_URL}/api/v1/admin/users`,
+                    {
+                        withCredentials: true,
+                    }
+                ),
+
+                axios.get(
+                    `${API_BASE_URL}/api/v1/admin/applications`,
+                    {
+                        withCredentials: true,
+                    }
+                ),
+            ]);
+
+            console.log(
+                "All Companies:",
+                companiesRes.data
+            );
+
+            console.log(
+                "All Jobs:",
+                jobsRes.data
+            );
+
+            console.log(
+                "All Users:",
+                usersRes.data
+            );
+
+            console.log(
+                "All Applications:",
+                applicationsRes.data
+            );
+
+            if (
+                companiesRes.data?.success
+            ) {
+                setCompanies(
+                    companiesRes.data.companies ||
+                        []
+                );
+            }
+
+            if (
+                jobsRes.data?.success
+            ) {
+                setJobs(
+                    jobsRes.data.jobs || []
+                );
+            }
+
+            if (
+                usersRes.data?.success
+            ) {
+                setUsers(
+                    usersRes.data.users || []
+                );
+            }
+
+            if (
+                applicationsRes.data?.success
+            ) {
+                setApplications(
+                    applicationsRes.data
+                        .applications || []
+                );
+            }
+        } catch (error) {
+            console.error(
+                "Fetch All Admin Data Error:",
+                error
+            );
+
+            console.error(
+                "Status:",
+                error.response?.status
+            );
+
+            console.error(
+                "Response:",
+                error.response?.data
+            );
+
+            if (
+                error.response?.status === 401 ||
+                error.response?.status === 403
+            ) {
+                toast.error(
+                    "Admin session expired. Please login again."
+                );
+
+                navigate("/admin-login", {
+                    replace: true,
+                });
+            } else {
+                toast.error(
+                    error.response?.data?.message ||
+                        "Failed to load admin data."
+                );
+            }
+        } finally {
+            setSectionLoading(false);
+        }
+    };
+
+    // =====================================================
+    // LOAD DATA
+    // =====================================================
+
     useEffect(() => {
         fetchDashboardData();
+        fetchAllAdminData();
     }, []);
 
     // =====================================================
@@ -161,13 +352,18 @@ const AdminDashboard = () => {
                 }
             );
 
-            toast.success("Admin logout successful.");
+            toast.success(
+                "Admin logout successful."
+            );
 
             navigate("/admin-login", {
                 replace: true,
             });
         } catch (error) {
-            console.error("Logout Error:", error);
+            console.error(
+                "Logout Error:",
+                error
+            );
 
             navigate("/admin-login", {
                 replace: true,
@@ -198,8 +394,11 @@ const AdminDashboard = () => {
 
     const openSection = (section) => {
         setActiveSection(section);
+
         setSelectedCompany(null);
+
         setSelectedJob(null);
+
         setSidebarOpen(false);
     };
 
@@ -209,7 +408,11 @@ const AdminDashboard = () => {
 
     const openCompany = (company) => {
         setSelectedCompany(company);
-        setActiveSection("company-details");
+
+        setActiveSection(
+            "company-details"
+        );
+
         setSidebarOpen(false);
     };
 
@@ -219,7 +422,11 @@ const AdminDashboard = () => {
 
     const openJob = (job) => {
         setSelectedJob(job);
-        setActiveSection("job-details");
+
+        setActiveSection(
+            "job-details"
+        );
+
         setSidebarOpen(false);
     };
 
@@ -228,20 +435,57 @@ const AdminDashboard = () => {
     // =====================================================
 
     const handleProfilePhoto = (event) => {
-        const file = event.target.files?.[0];
+        const file =
+            event.target.files?.[0];
 
         if (!file) return;
 
-        if (!file.type.startsWith("image/")) {
-            toast.error("Please select an image.");
+        if (
+            !file.type.startsWith("image/")
+        ) {
+            toast.error(
+                "Please select an image."
+            );
+
             return;
         }
 
-        const imageURL = URL.createObjectURL(file);
+        if (
+            file.size >
+            2 * 1024 * 1024
+        ) {
+            toast.error(
+                "Please select an image smaller than 2MB."
+            );
 
-        setProfilePhoto(imageURL);
+            return;
+        }
 
-        toast.success("Profile photo changed.");
+        const reader =
+            new FileReader();
+
+        reader.onloadend = () => {
+            const imageURL =
+                reader.result;
+
+            setProfilePhoto(
+                imageURL
+            );
+
+            localStorage.setItem(
+                "adminProfilePhoto",
+                imageURL
+            );
+
+            toast.success(
+                "Profile photo changed successfully."
+            );
+        };
+
+        reader.readAsDataURL(file);
+
+        // Same file dobara select kar sake
+        event.target.value = "";
     };
 
     // =====================================================
@@ -299,7 +543,9 @@ const AdminDashboard = () => {
 
                 <button
                     onClick={() =>
-                        openSection("dashboard")
+                        openSection(
+                            "dashboard"
+                        )
                     }
                     className={`
                         w-full
@@ -311,21 +557,29 @@ const AdminDashboard = () => {
                         rounded-xl
                         transition
                         ${
-                            activeSection === "dashboard"
+                            activeSection ===
+                            "dashboard"
                                 ? "bg-blue-600 text-white"
                                 : "hover:bg-white/10"
                         }
                     `}
                 >
-                    <LayoutDashboard size={21} />
-                    <span>Dashboard</span>
+                    <LayoutDashboard
+                        size={21}
+                    />
+
+                    <span>
+                        Dashboard
+                    </span>
                 </button>
 
                 {/* COMPANIES */}
 
                 <button
                     onClick={() =>
-                        openSection("companies")
+                        openSection(
+                            "companies"
+                        )
                     }
                     className={`
                         w-full
@@ -337,22 +591,31 @@ const AdminDashboard = () => {
                         rounded-xl
                         transition
                         ${
-                            activeSection === "companies" ||
-                            activeSection === "company-details"
+                            activeSection ===
+                                "companies" ||
+                            activeSection ===
+                                "company-details"
                                 ? "bg-blue-600 text-white"
                                 : "hover:bg-white/10"
                         }
                     `}
                 >
-                    <Building2 size={21} />
-                    <span>Companies</span>
+                    <Building2
+                        size={21}
+                    />
+
+                    <span>
+                        Companies
+                    </span>
                 </button>
 
                 {/* JOBS */}
 
                 <button
                     onClick={() =>
-                        openSection("jobs")
+                        openSection(
+                            "jobs"
+                        )
                     }
                     className={`
                         w-full
@@ -364,22 +627,31 @@ const AdminDashboard = () => {
                         rounded-xl
                         transition
                         ${
-                            activeSection === "jobs" ||
-                            activeSection === "job-details"
+                            activeSection ===
+                                "jobs" ||
+                            activeSection ===
+                                "job-details"
                                 ? "bg-blue-600 text-white"
                                 : "hover:bg-white/10"
                         }
                     `}
                 >
-                    <BriefcaseBusiness size={21} />
-                    <span>Jobs</span>
+                    <BriefcaseBusiness
+                        size={21}
+                    />
+
+                    <span>
+                        Jobs
+                    </span>
                 </button>
 
                 {/* USERS */}
 
                 <button
                     onClick={() =>
-                        openSection("users")
+                        openSection(
+                            "users"
+                        )
                     }
                     className={`
                         w-full
@@ -391,21 +663,27 @@ const AdminDashboard = () => {
                         rounded-xl
                         transition
                         ${
-                            activeSection === "users"
+                            activeSection ===
+                            "users"
                                 ? "bg-blue-600 text-white"
                                 : "hover:bg-white/10"
                         }
                     `}
                 >
                     <Users size={21} />
-                    <span>Users</span>
+
+                    <span>
+                        Users
+                    </span>
                 </button>
 
                 {/* APPLICATIONS */}
 
                 <button
                     onClick={() =>
-                        openSection("applications")
+                        openSection(
+                            "applications"
+                        )
                     }
                     className={`
                         w-full
@@ -417,21 +695,29 @@ const AdminDashboard = () => {
                         rounded-xl
                         transition
                         ${
-                            activeSection === "applications"
+                            activeSection ===
+                            "applications"
                                 ? "bg-blue-600 text-white"
                                 : "hover:bg-white/10"
                         }
                     `}
                 >
-                    <FileText size={21} />
-                    <span>Applications</span>
+                    <FileText
+                        size={21}
+                    />
+
+                    <span>
+                        Applications
+                    </span>
                 </button>
 
                 {/* PROFILE */}
 
                 <button
                     onClick={() =>
-                        openSection("profile")
+                        openSection(
+                            "profile"
+                        )
                     }
                     className={`
                         w-full
@@ -443,20 +729,26 @@ const AdminDashboard = () => {
                         rounded-xl
                         transition
                         ${
-                            activeSection === "profile"
+                            activeSection ===
+                            "profile"
                                 ? "bg-blue-600 text-white"
                                 : "hover:bg-white/10"
                         }
                     `}
                 >
                     <User size={21} />
-                    <span>Profile</span>
+
+                    <span>
+                        Profile
+                    </span>
                 </button>
 
                 {/* LOGOUT */}
 
                 <button
-                    onClick={handleLogout}
+                    onClick={
+                        handleLogout
+                    }
                     className="
                         w-full
                         flex
@@ -472,7 +764,10 @@ const AdminDashboard = () => {
                     "
                 >
                     <LogOut size={21} />
-                    <span>Logout</span>
+
+                    <span>
+                        Logout
+                    </span>
                 </button>
             </div>
 
@@ -505,9 +800,15 @@ const AdminDashboard = () => {
                     >
                         {profilePhoto ? (
                             <img
-                                src={profilePhoto}
+                                src={
+                                    profilePhoto
+                                }
                                 alt="Admin"
-                                className="w-full h-full object-cover"
+                                className="
+                                    w-full
+                                    h-full
+                                    object-cover
+                                "
                             />
                         ) : (
                             <User
@@ -518,6 +819,7 @@ const AdminDashboard = () => {
                     </div>
 
                     <div className="overflow-hidden">
+
                         <p className="font-semibold text-sm">
                             Super Admin
                         </p>
@@ -525,6 +827,7 @@ const AdminDashboard = () => {
                         <p className="text-xs text-gray-300 truncate">
                             Admin Account
                         </p>
+
                     </div>
                 </div>
             </div>
@@ -568,28 +871,36 @@ const AdminDashboard = () => {
                         text-gray-800
                     "
                 >
-                    {activeSection === "dashboard" &&
+                    {activeSection ===
+                        "dashboard" &&
                         "Admin Dashboard"}
 
-                    {activeSection === "companies" &&
+                    {activeSection ===
+                        "companies" &&
                         "Companies"}
 
-                    {activeSection === "company-details" &&
+                    {activeSection ===
+                        "company-details" &&
                         "Company Details"}
 
-                    {activeSection === "jobs" &&
+                    {activeSection ===
+                        "jobs" &&
                         "Jobs"}
 
-                    {activeSection === "job-details" &&
+                    {activeSection ===
+                        "job-details" &&
                         "Job Details"}
 
-                    {activeSection === "users" &&
+                    {activeSection ===
+                        "users" &&
                         "Users"}
 
-                    {activeSection === "applications" &&
+                    {activeSection ===
+                        "applications" &&
                         "Applications"}
 
-                    {activeSection === "profile" &&
+                    {activeSection ===
+                        "profile" &&
                         "Profile"}
                 </h1>
             </div>
@@ -610,9 +921,15 @@ const AdminDashboard = () => {
                 >
                     {profilePhoto ? (
                         <img
-                            src={profilePhoto}
+                            src={
+                                profilePhoto
+                            }
                             alt="Admin"
-                            className="w-full h-full object-cover"
+                            className="
+                                w-full
+                                h-full
+                                object-cover
+                            "
                         />
                     ) : (
                         <User
@@ -623,9 +940,11 @@ const AdminDashboard = () => {
                 </div>
 
                 <div className="hidden sm:block">
+
                     <p className="font-semibold text-sm">
                         Super Admin
                     </p>
+
                 </div>
             </div>
         </header>
@@ -672,6 +991,7 @@ const AdminDashboard = () => {
                         Here's what's happening with
                         your job portal.
                     </p>
+
                 </div>
 
                 <div
@@ -683,7 +1003,9 @@ const AdminDashboard = () => {
                         text-sm
                     "
                 >
-                    <CalendarDays size={19} />
+                    <CalendarDays
+                        size={19}
+                    />
 
                     {new Date().toLocaleDateString(
                         "en-IN",
@@ -713,7 +1035,9 @@ const AdminDashboard = () => {
 
                 <button
                     onClick={() =>
-                        openSection("companies")
+                        openSection(
+                            "companies"
+                        )
                     }
                     className="
                         text-left
@@ -729,6 +1053,7 @@ const AdminDashboard = () => {
                     <div className="flex items-center justify-between">
 
                         <div>
+
                             <p className="text-sm text-gray-500">
                                 Total Companies
                             </p>
@@ -740,14 +1065,18 @@ const AdminDashboard = () => {
                             <p className="text-sm text-green-600 mt-2">
                                 Companies added
                             </p>
+
                         </div>
 
                         <div className="w-14 h-14 rounded-xl bg-blue-100 flex items-center justify-center">
+
                             <Building2
                                 size={28}
                                 className="text-blue-600"
                             />
+
                         </div>
+
                     </div>
                 </button>
 
@@ -755,7 +1084,9 @@ const AdminDashboard = () => {
 
                 <button
                     onClick={() =>
-                        openSection("jobs")
+                        openSection(
+                            "jobs"
+                        )
                     }
                     className="
                         text-left
@@ -771,6 +1102,7 @@ const AdminDashboard = () => {
                     <div className="flex items-center justify-between">
 
                         <div>
+
                             <p className="text-sm text-gray-500">
                                 Total Jobs Posted
                             </p>
@@ -782,14 +1114,18 @@ const AdminDashboard = () => {
                             <p className="text-sm text-green-600 mt-2">
                                 Jobs available
                             </p>
+
                         </div>
 
                         <div className="w-14 h-14 rounded-xl bg-green-100 flex items-center justify-center">
+
                             <BriefcaseBusiness
                                 size={28}
                                 className="text-green-600"
                             />
+
                         </div>
+
                     </div>
                 </button>
 
@@ -797,7 +1133,9 @@ const AdminDashboard = () => {
 
                 <button
                     onClick={() =>
-                        openSection("users")
+                        openSection(
+                            "users"
+                        )
                     }
                     className="
                         text-left
@@ -813,6 +1151,7 @@ const AdminDashboard = () => {
                     <div className="flex items-center justify-between">
 
                         <div>
+
                             <p className="text-sm text-gray-500">
                                 Total Users
                             </p>
@@ -824,14 +1163,18 @@ const AdminDashboard = () => {
                             <p className="text-sm text-green-600 mt-2">
                                 Registered users
                             </p>
+
                         </div>
 
                         <div className="w-14 h-14 rounded-xl bg-purple-100 flex items-center justify-center">
+
                             <Users
                                 size={28}
                                 className="text-purple-600"
                             />
+
                         </div>
+
                     </div>
                 </button>
 
@@ -839,7 +1182,9 @@ const AdminDashboard = () => {
 
                 <button
                     onClick={() =>
-                        openSection("applications")
+                        openSection(
+                            "applications"
+                        )
                     }
                     className="
                         text-left
@@ -855,6 +1200,7 @@ const AdminDashboard = () => {
                     <div className="flex items-center justify-between">
 
                         <div>
+
                             <p className="text-sm text-gray-500">
                                 Total Applications
                             </p>
@@ -866,14 +1212,18 @@ const AdminDashboard = () => {
                             <p className="text-sm text-green-600 mt-2">
                                 Applications received
                             </p>
+
                         </div>
 
                         <div className="w-14 h-14 rounded-xl bg-orange-100 flex items-center justify-center">
+
                             <TrendingUp
                                 size={28}
                                 className="text-orange-500"
                             />
+
                         </div>
+
                     </div>
                 </button>
 
@@ -895,17 +1245,21 @@ const AdminDashboard = () => {
 
                         <button
                             onClick={() =>
-                                openSection("companies")
+                                openSection(
+                                    "companies"
+                                )
                             }
                             className="text-sm text-blue-600 font-medium hover:underline"
                         >
                             View All
                         </button>
+
                     </div>
 
                     <div className="p-5">
 
-                        {recentCompanies.length === 0 ? (
+                        {recentCompanies.length ===
+                        0 ? (
                             <p className="text-gray-500 text-center py-8">
                                 No companies found.
                             </p>
@@ -913,9 +1267,13 @@ const AdminDashboard = () => {
                             recentCompanies.map(
                                 (company) => (
                                     <button
-                                        key={company._id}
+                                        key={
+                                            company._id
+                                        }
                                         onClick={() =>
-                                            openCompany(company)
+                                            openCompany(
+                                                company
+                                            )
                                         }
                                         className="
                                             w-full
@@ -946,7 +1304,9 @@ const AdminDashboard = () => {
                                         >
                                             {company.logo ? (
                                                 <img
-                                                    src={company.logo}
+                                                    src={
+                                                        company.logo
+                                                    }
                                                     alt={
                                                         company.name ||
                                                         "Company"
@@ -955,7 +1315,9 @@ const AdminDashboard = () => {
                                                 />
                                             ) : (
                                                 <Building2
-                                                    size={22}
+                                                    size={
+                                                        22
+                                                    }
                                                     className="text-gray-400"
                                                 />
                                             )}
@@ -973,16 +1335,19 @@ const AdminDashboard = () => {
                                                     company.createdAt
                                                 )}
                                             </p>
+
                                         </div>
 
                                         <MoreVertical
                                             size={20}
                                             className="text-gray-400"
                                         />
+
                                     </button>
                                 )
                             )
                         )}
+
                     </div>
                 </div>
 
@@ -998,17 +1363,21 @@ const AdminDashboard = () => {
 
                         <button
                             onClick={() =>
-                                openSection("users")
+                                openSection(
+                                    "users"
+                                )
                             }
                             className="text-sm text-blue-600 font-medium hover:underline"
                         >
                             View All
                         </button>
+
                     </div>
 
                     <div className="p-5">
 
-                        {recentUsers.length === 0 ? (
+                        {recentUsers.length ===
+                        0 ? (
                             <p className="text-gray-500 text-center py-8">
                                 No users found.
                             </p>
@@ -1016,7 +1385,9 @@ const AdminDashboard = () => {
                             recentUsers.map(
                                 (user) => (
                                     <div
-                                        key={user._id}
+                                        key={
+                                            user._id
+                                        }
                                         className="
                                             flex
                                             items-center
@@ -1026,6 +1397,7 @@ const AdminDashboard = () => {
                                             last:border-b-0
                                         "
                                     >
+
                                         <div
                                             className="
                                                 w-11
@@ -1042,7 +1414,9 @@ const AdminDashboard = () => {
                                             {user.profile?.profilePhoto ? (
                                                 <img
                                                     src={
-                                                        user.profile.profilePhoto
+                                                        user
+                                                            .profile
+                                                            .profilePhoto
                                                     }
                                                     alt={
                                                         user.fullname ||
@@ -1052,7 +1426,9 @@ const AdminDashboard = () => {
                                                 />
                                             ) : (
                                                 <User
-                                                    size={22}
+                                                    size={
+                                                        22
+                                                    }
                                                     className="text-gray-500"
                                                 />
                                             )}
@@ -1066,8 +1442,10 @@ const AdminDashboard = () => {
                                             </p>
 
                                             <p className="text-sm text-gray-500 truncate">
-                                                {user.email || ""}
+                                                {user.email ||
+                                                    ""}
                                             </p>
+
                                         </div>
 
                                         <span
@@ -1082,12 +1460,15 @@ const AdminDashboard = () => {
                                                 text-gray-600
                                             "
                                         >
-                                            {user.role || "User"}
+                                            {user.role ||
+                                                "User"}
                                         </span>
+
                                     </div>
                                 )
                             )
                         )}
+
                     </div>
                 </div>
 
@@ -1102,6 +1483,7 @@ const AdminDashboard = () => {
                         xl:col-span-2
                     "
                 >
+
                     <div className="p-5 border-b flex items-center justify-between">
 
                         <h3 className="text-lg font-bold text-gray-800">
@@ -1110,17 +1492,21 @@ const AdminDashboard = () => {
 
                         <button
                             onClick={() =>
-                                openSection("jobs")
+                                openSection(
+                                    "jobs"
+                                )
                             }
                             className="text-sm text-blue-600 font-medium hover:underline"
                         >
                             View All
                         </button>
+
                     </div>
 
                     <div className="p-5">
 
-                        {recentJobs.length === 0 ? (
+                        {recentJobs.length ===
+                        0 ? (
                             <p className="text-gray-500 text-center py-8">
                                 No jobs found.
                             </p>
@@ -1128,9 +1514,13 @@ const AdminDashboard = () => {
                             recentJobs.map(
                                 (job) => (
                                     <button
-                                        key={job._id}
+                                        key={
+                                            job._id
+                                        }
                                         onClick={() =>
-                                            openJob(job)
+                                            openJob(
+                                                job
+                                            )
                                         }
                                         className="
                                             w-full
@@ -1145,6 +1535,7 @@ const AdminDashboard = () => {
                                             transition
                                         "
                                     >
+
                                         <div
                                             className="
                                                 w-11
@@ -1162,10 +1553,13 @@ const AdminDashboard = () => {
                                             {job.company?.logo ? (
                                                 <img
                                                     src={
-                                                        job.company.logo
+                                                        job
+                                                            .company
+                                                            .logo
                                                     }
                                                     alt={
-                                                        job.company
+                                                        job
+                                                            .company
                                                             ?.name ||
                                                         "Company"
                                                     }
@@ -1173,7 +1567,9 @@ const AdminDashboard = () => {
                                                 />
                                             ) : (
                                                 <BriefcaseBusiness
-                                                    size={22}
+                                                    size={
+                                                        22
+                                                    }
                                                     className="text-gray-400"
                                                 />
                                             )}
@@ -1187,12 +1583,14 @@ const AdminDashboard = () => {
                                             </p>
 
                                             <p className="text-sm text-gray-500 truncate">
-                                                {job.company?.name ||
+                                                {job.company
+                                                    ?.name ||
                                                     "Company"}
                                                 {" • "}
                                                 {job.jobType ||
                                                     "Job"}
                                             </p>
+
                                         </div>
 
                                         <p
@@ -1213,18 +1611,21 @@ const AdminDashboard = () => {
                                             size={20}
                                             className="text-gray-400"
                                         />
+
                                     </button>
                                 )
                             )
                         )}
+
                     </div>
                 </div>
+
             </div>
         </>
     );
 
     // =====================================================
-    // COMPANIES SECTION
+    // COMPANIES SECTION - ALL COMPANIES
     // =====================================================
 
     const CompaniesSection = () => (
@@ -1233,13 +1634,15 @@ const AdminDashboard = () => {
             <div className="p-5 border-b flex items-center justify-between">
 
                 <div>
+
                     <h2 className="text-xl font-bold text-gray-800">
                         All Companies
                     </h2>
 
                     <p className="text-sm text-gray-500 mt-1">
-                        Total {stats.companies} companies
+                        Total {companies.length} companies
                     </p>
+
                 </div>
 
                 <button
@@ -1261,25 +1664,36 @@ const AdminDashboard = () => {
                     "
                 >
                     <Plus size={18} />
+
                     Add Company
                 </button>
+
             </div>
 
             <div className="p-5">
 
-                {recentCompanies.length === 0 ? (
+                {sectionLoading ? (
+                    <p className="text-center py-10 text-gray-500">
+                        Loading companies...
+                    </p>
+                ) : companies.length ===
+                  0 ? (
                     <p className="text-center py-10 text-gray-500">
                         No companies found.
                     </p>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
 
-                        {recentCompanies.map(
+                        {companies.map(
                             (company) => (
                                 <button
-                                    key={company._id}
+                                    key={
+                                        company._id
+                                    }
                                     onClick={() =>
-                                        openCompany(company)
+                                        openCompany(
+                                            company
+                                        )
                                     }
                                     className="
                                         text-left
@@ -1292,6 +1706,7 @@ const AdminDashboard = () => {
                                         bg-white
                                     "
                                 >
+
                                     <div className="flex items-center gap-4">
 
                                         <div
@@ -1310,7 +1725,9 @@ const AdminDashboard = () => {
                                         >
                                             {company.logo ? (
                                                 <img
-                                                    src={company.logo}
+                                                    src={
+                                                        company.logo
+                                                    }
                                                     alt={
                                                         company.name ||
                                                         "Company"
@@ -1319,13 +1736,16 @@ const AdminDashboard = () => {
                                                 />
                                             ) : (
                                                 <Building2
-                                                    size={26}
+                                                    size={
+                                                        26
+                                                    }
                                                     className="text-gray-400"
                                                 />
                                             )}
                                         </div>
 
                                         <div className="min-w-0">
+
                                             <h3 className="font-bold text-gray-800 truncate">
                                                 {company.name ||
                                                     "Company"}
@@ -1337,18 +1757,22 @@ const AdminDashboard = () => {
                                                     company.createdAt
                                                 )}
                                             </p>
+
                                         </div>
+
                                     </div>
 
                                     <div className="mt-5 text-sm text-blue-600 font-medium">
                                         View Company →
                                     </div>
+
                                 </button>
                             )
                         )}
 
                     </div>
                 )}
+
             </div>
         </div>
     );
@@ -1362,7 +1786,9 @@ const AdminDashboard = () => {
 
             <button
                 onClick={() =>
-                    openSection("companies")
+                    openSection(
+                        "companies"
+                    )
                 }
                 className="
                     flex
@@ -1373,7 +1799,10 @@ const AdminDashboard = () => {
                     mb-5
                 "
             >
-                <ArrowLeft size={18} />
+                <ArrowLeft
+                    size={18}
+                />
+
                 Back to Companies
             </button>
 
@@ -1396,7 +1825,9 @@ const AdminDashboard = () => {
                     >
                         {selectedCompany?.logo ? (
                             <img
-                                src={selectedCompany.logo}
+                                src={
+                                    selectedCompany.logo
+                                }
                                 alt={
                                     selectedCompany.name ||
                                     "Company"
@@ -1412,6 +1843,7 @@ const AdminDashboard = () => {
                     </div>
 
                     <div>
+
                         <h2 className="text-2xl font-bold text-gray-800">
                             {selectedCompany?.name ||
                                 "Company"}
@@ -1420,7 +1852,9 @@ const AdminDashboard = () => {
                         <p className="text-gray-500 mt-1">
                             Company Details
                         </p>
+
                     </div>
+
                 </div>
 
                 <div className="mt-8 border-t pt-6">
@@ -1428,6 +1862,7 @@ const AdminDashboard = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
 
                         <div>
+
                             <p className="text-sm text-gray-500">
                                 Company Name
                             </p>
@@ -1436,9 +1871,11 @@ const AdminDashboard = () => {
                                 {selectedCompany?.name ||
                                     "N/A"}
                             </p>
+
                         </div>
 
                         <div>
+
                             <p className="text-sm text-gray-500">
                                 Created
                             </p>
@@ -1448,6 +1885,7 @@ const AdminDashboard = () => {
                                     selectedCompany?.createdAt
                                 )}
                             </p>
+
                         </div>
 
                     </div>
@@ -1457,7 +1895,7 @@ const AdminDashboard = () => {
     );
 
     // =====================================================
-    // JOBS SECTION
+    // JOBS SECTION - ALL JOBS
     // =====================================================
 
     const JobsSection = () => (
@@ -1470,25 +1908,35 @@ const AdminDashboard = () => {
                 </h2>
 
                 <p className="text-sm text-gray-500 mt-1">
-                    Total {stats.jobs} jobs
+                    Total {jobs.length} jobs
                 </p>
+
             </div>
 
             <div className="p-5">
 
-                {recentJobs.length === 0 ? (
+                {sectionLoading ? (
+                    <p className="text-center py-10 text-gray-500">
+                        Loading jobs...
+                    </p>
+                ) : jobs.length ===
+                  0 ? (
                     <p className="text-center py-10 text-gray-500">
                         No jobs found.
                     </p>
                 ) : (
                     <div className="space-y-3">
 
-                        {recentJobs.map(
+                        {jobs.map(
                             (job) => (
                                 <button
-                                    key={job._id}
+                                    key={
+                                        job._id
+                                    }
                                     onClick={() =>
-                                        openJob(job)
+                                        openJob(
+                                            job
+                                        )
                                     }
                                     className="
                                         w-full
@@ -1504,6 +1952,7 @@ const AdminDashboard = () => {
                                         transition
                                     "
                                 >
+
                                     <div
                                         className="
                                             w-12
@@ -1521,14 +1970,18 @@ const AdminDashboard = () => {
                                         {job.company?.logo ? (
                                             <img
                                                 src={
-                                                    job.company.logo
+                                                    job
+                                                        .company
+                                                        .logo
                                                 }
                                                 alt="Company"
                                                 className="w-full h-full object-contain"
                                             />
                                         ) : (
                                             <BriefcaseBusiness
-                                                size={24}
+                                                size={
+                                                    24
+                                                }
                                                 className="text-gray-400"
                                             />
                                         )}
@@ -1542,12 +1995,14 @@ const AdminDashboard = () => {
                                         </h3>
 
                                         <p className="text-sm text-gray-500 truncate mt-1">
-                                            {job.company?.name ||
+                                            {job.company
+                                                ?.name ||
                                                 "Company"}
                                             {" • "}
                                             {job.jobType ||
                                                 "Job"}
                                         </p>
+
                                     </div>
 
                                     <span className="hidden sm:block text-sm text-gray-500">
@@ -1560,12 +2015,14 @@ const AdminDashboard = () => {
                                         size={20}
                                         className="text-gray-400"
                                     />
+
                                 </button>
                             )
                         )}
 
                     </div>
                 )}
+
             </div>
         </div>
     );
@@ -1579,7 +2036,9 @@ const AdminDashboard = () => {
 
             <button
                 onClick={() =>
-                    openSection("jobs")
+                    openSection(
+                        "jobs"
+                    )
                 }
                 className="
                     flex
@@ -1590,7 +2049,10 @@ const AdminDashboard = () => {
                     mb-5
                 "
             >
-                <ArrowLeft size={18} />
+                <ArrowLeft
+                    size={18}
+                />
+
                 Back to Jobs
             </button>
 
@@ -1614,7 +2076,9 @@ const AdminDashboard = () => {
                         {selectedJob?.company?.logo ? (
                             <img
                                 src={
-                                    selectedJob.company.logo
+                                    selectedJob
+                                        .company
+                                        .logo
                                 }
                                 alt="Company"
                                 className="w-full h-full object-contain"
@@ -1628,21 +2092,26 @@ const AdminDashboard = () => {
                     </div>
 
                     <div>
+
                         <h2 className="text-2xl font-bold text-gray-800">
                             {selectedJob?.title ||
                                 "Untitled Job"}
                         </h2>
 
                         <p className="text-gray-500 mt-1">
-                            {selectedJob?.company?.name ||
+                            {selectedJob?.company
+                                ?.name ||
                                 "Company"}
                         </p>
+
                     </div>
+
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-8 border-t pt-6">
 
                     <div>
+
                         <p className="text-sm text-gray-500">
                             Job Type
                         </p>
@@ -1651,9 +2120,11 @@ const AdminDashboard = () => {
                             {selectedJob?.jobType ||
                                 "N/A"}
                         </p>
+
                     </div>
 
                     <div>
+
                         <p className="text-sm text-gray-500">
                             Location
                         </p>
@@ -1662,9 +2133,11 @@ const AdminDashboard = () => {
                             {selectedJob?.location ||
                                 "N/A"}
                         </p>
+
                     </div>
 
                     <div>
+
                         <p className="text-sm text-gray-500">
                             Posted
                         </p>
@@ -1674,6 +2147,7 @@ const AdminDashboard = () => {
                                 selectedJob?.createdAt
                             )}
                         </p>
+
                     </div>
 
                 </div>
@@ -1682,7 +2156,7 @@ const AdminDashboard = () => {
     );
 
     // =====================================================
-    // USERS SECTION
+    // USERS SECTION - ALL USERS
     // =====================================================
 
     const UsersSection = () => (
@@ -1695,23 +2169,31 @@ const AdminDashboard = () => {
                 </h2>
 
                 <p className="text-sm text-gray-500 mt-1">
-                    Total {stats.users} registered users
+                    Total {users.length} registered users
                 </p>
+
             </div>
 
             <div className="p-5">
 
-                {recentUsers.length === 0 ? (
+                {sectionLoading ? (
+                    <p className="text-center py-10 text-gray-500">
+                        Loading users...
+                    </p>
+                ) : users.length ===
+                  0 ? (
                     <p className="text-center py-10 text-gray-500">
                         No users found.
                     </p>
                 ) : (
                     <div className="space-y-3">
 
-                        {recentUsers.map(
+                        {users.map(
                             (user) => (
                                 <div
-                                    key={user._id}
+                                    key={
+                                        user._id
+                                    }
                                     className="
                                         flex
                                         items-center
@@ -1721,6 +2203,7 @@ const AdminDashboard = () => {
                                         p-4
                                     "
                                 >
+
                                     <div
                                         className="
                                             w-12
@@ -1737,7 +2220,9 @@ const AdminDashboard = () => {
                                         {user.profile?.profilePhoto ? (
                                             <img
                                                 src={
-                                                    user.profile.profilePhoto
+                                                    user
+                                                        .profile
+                                                        .profilePhoto
                                                 }
                                                 alt={
                                                     user.fullname ||
@@ -1747,7 +2232,9 @@ const AdminDashboard = () => {
                                             />
                                         ) : (
                                             <User
-                                                size={24}
+                                                size={
+                                                    24
+                                                }
                                                 className="text-gray-500"
                                             />
                                         )}
@@ -1761,8 +2248,10 @@ const AdminDashboard = () => {
                                         </p>
 
                                         <p className="text-sm text-gray-500 truncate">
-                                            {user.email || ""}
+                                            {user.email ||
+                                                ""}
                                         </p>
+
                                     </div>
 
                                     <span
@@ -1780,59 +2269,311 @@ const AdminDashboard = () => {
                                         {user.role ||
                                             "User"}
                                     </span>
+
                                 </div>
                             )
                         )}
 
                     </div>
                 )}
+
             </div>
         </div>
     );
 
     // =====================================================
-    // APPLICATIONS SECTION
+    // APPLICATIONS SECTION - ALL APPLICATIONS
     // =====================================================
 
-    const ApplicationsSection = () => (
-        <div className="bg-white rounded-2xl border shadow-sm">
+    const ApplicationsSection = () => {
 
-            <div className="p-5 border-b">
+        const updateApplicationStatus =
+            async (
+                applicationId,
+                status
+            ) => {
+                try {
+                    const res =
+                        await axios.put(
+                            `${API_BASE_URL}/api/v1/admin/applications/${applicationId}/status`,
+                            {
+                                status,
+                            },
+                            {
+                                withCredentials:
+                                    true,
+                            }
+                        );
 
-                <h2 className="text-xl font-bold text-gray-800">
-                    Applications
-                </h2>
+                    if (
+                        res.data?.success
+                    ) {
+                        toast.success(
+                            "Application status updated."
+                        );
 
-                <p className="text-sm text-gray-500 mt-1">
-                    Total {stats.applications} applications
-                </p>
-            </div>
+                        setApplications(
+                            (prev) =>
+                                prev.map(
+                                    (
+                                        application
+                                    ) =>
+                                        application._id ===
+                                        applicationId
+                                            ? {
+                                                  ...application,
+                                                  status,
+                                              }
+                                            : application
+                                )
+                        );
+                    }
+                } catch (error) {
+                    console.error(
+                        "Update Application Error:",
+                        error
+                    );
 
-            <div className="p-8 text-center">
+                    toast.error(
+                        error.response
+                            ?.data
+                            ?.message ||
+                            "Failed to update application."
+                    );
+                }
+            };
 
-                <div className="w-16 h-16 mx-auto rounded-2xl bg-orange-100 flex items-center justify-center">
-                    <FileText
-                        size={30}
-                        className="text-orange-500"
-                    />
+        return (
+            <div className="bg-white rounded-2xl border shadow-sm">
+
+                <div className="p-5 border-b">
+
+                    <h2 className="text-xl font-bold text-gray-800">
+                        All Applications
+                    </h2>
+
+                    <p className="text-sm text-gray-500 mt-1">
+                        Total{" "}
+                        {
+                            applications.length
+                        }{" "}
+                        applications
+                    </p>
+
                 </div>
 
-                <h3 className="text-lg font-bold text-gray-800 mt-4">
-                    Applications
-                </h3>
+                <div className="p-5">
 
-                <p className="text-gray-500 mt-2">
-                    Application details can be displayed
-                    here inside the dashboard.
-                </p>
+                    {sectionLoading ? (
+                        <p className="text-center py-10 text-gray-500">
+                            Loading applications...
+                        </p>
+                    ) : applications.length ===
+                      0 ? (
+                        <div className="text-center py-10">
 
-                <p className="text-3xl font-bold text-gray-800 mt-4">
-                    {stats.applications}
-                </p>
+                            <FileText
+                                size={40}
+                                className="mx-auto text-gray-300"
+                            />
+
+                            <p className="text-gray-500 mt-3">
+                                No applications found.
+                            </p>
+
+                        </div>
+                    ) : (
+                        <div className="space-y-3">
+
+                            {applications.map(
+                                (
+                                    application
+                                ) => {
+
+                                    const applicant =
+                                        application.applicant;
+
+                                    const job =
+                                        application.job;
+
+                                    const company =
+                                        job?.company;
+
+                                    return (
+                                        <div
+                                            key={
+                                                application._id
+                                            }
+                                            className="
+                                                border
+                                                rounded-xl
+                                                p-4
+                                                flex
+                                                flex-col
+                                                lg:flex-row
+                                                lg:items-center
+                                                gap-4
+                                            "
+                                        >
+
+                                            {/* APPLICANT IMAGE */}
+
+                                            <div
+                                                className="
+                                                    w-12
+                                                    h-12
+                                                    rounded-full
+                                                    bg-gray-100
+                                                    flex
+                                                    items-center
+                                                    justify-center
+                                                    overflow-hidden
+                                                    shrink-0
+                                                "
+                                            >
+                                                {applicant
+                                                    ?.profile
+                                                    ?.profilePhoto ? (
+                                                    <img
+                                                        src={
+                                                            applicant
+                                                                .profile
+                                                                .profilePhoto
+                                                        }
+                                                        alt="Applicant"
+                                                        className="w-full h-full object-cover"
+                                                    />
+                                                ) : (
+                                                    <User
+                                                        size={
+                                                            23
+                                                        }
+                                                        className="text-gray-500"
+                                                    />
+                                                )}
+                                            </div>
+
+                                            {/* APPLICANT DETAILS */}
+
+                                            <div className="flex-1 min-w-0">
+
+                                                <p className="font-bold text-gray-800">
+                                                    {applicant?.fullname ||
+                                                        "Applicant"}
+                                                </p>
+
+                                                <p className="text-sm text-gray-500 truncate">
+                                                    {applicant?.email ||
+                                                        "No email"}
+                                                </p>
+
+                                                <p className="text-sm text-blue-600 mt-1">
+                                                    {job?.title ||
+                                                        "Job"}
+                                                </p>
+
+                                                <p className="text-xs text-gray-500">
+                                                    {company?.name ||
+                                                        "Company"}
+                                                </p>
+
+                                            </div>
+
+                                            {/* DATE */}
+
+                                            <div className="text-sm text-gray-500 whitespace-nowrap">
+                                                {formatDate(
+                                                    application.createdAt
+                                                )}
+                                            </div>
+
+                                            {/* STATUS */}
+
+                                            <div>
+
+                                                <span
+                                                    className={`
+                                                        px-3
+                                                        py-1.5
+                                                        rounded-full
+                                                        text-xs
+                                                        font-semibold
+                                                        ${
+                                                            application.status ===
+                                                            "accepted"
+                                                                ? "bg-green-100 text-green-700"
+                                                                : application.status ===
+                                                                  "rejected"
+                                                                ? "bg-red-100 text-red-700"
+                                                                : "bg-yellow-100 text-yellow-700"
+                                                        }
+                                                    `}
+                                                >
+                                                    {application.status ||
+                                                        "pending"}
+                                                </span>
+
+                                            </div>
+
+                                            {/* ACTION BUTTONS */}
+
+                                            <div className="flex gap-2">
+
+                                                <button
+                                                    onClick={() =>
+                                                        updateApplicationStatus(
+                                                            application._id,
+                                                            "accepted"
+                                                        )
+                                                    }
+                                                    className="
+                                                        px-3
+                                                        py-2
+                                                        rounded-lg
+                                                        bg-green-600
+                                                        text-white
+                                                        text-sm
+                                                        hover:bg-green-700
+                                                    "
+                                                >
+                                                    Accept
+                                                </button>
+
+                                                <button
+                                                    onClick={() =>
+                                                        updateApplicationStatus(
+                                                            application._id,
+                                                            "rejected"
+                                                        )
+                                                    }
+                                                    className="
+                                                        px-3
+                                                        py-2
+                                                        rounded-lg
+                                                        bg-red-600
+                                                        text-white
+                                                        text-sm
+                                                        hover:bg-red-700
+                                                    "
+                                                >
+                                                    Reject
+                                                </button>
+
+                                            </div>
+
+                                        </div>
+                                    );
+                                }
+                            )}
+
+                        </div>
+                    )}
+
+                </div>
 
             </div>
-        </div>
-    );
+        );
+    };
 
     // =====================================================
     // PROFILE SECTION
@@ -1850,6 +2591,7 @@ const AdminDashboard = () => {
                 <p className="text-sm text-gray-500 mt-1">
                     Admin profile photo
                 </p>
+
             </div>
 
             <div className="p-8 flex flex-col items-center">
@@ -1870,9 +2612,12 @@ const AdminDashboard = () => {
                         overflow-hidden
                     "
                 >
+
                     {profilePhoto ? (
                         <img
-                            src={profilePhoto}
+                            src={
+                                profilePhoto
+                            }
                             alt="Admin Profile"
                             className="w-full h-full object-cover"
                         />
@@ -1902,7 +2647,9 @@ const AdminDashboard = () => {
                             border-white
                         "
                     >
-                        <Camera size={20} />
+                        <Camera
+                            size={20}
+                        />
 
                         <input
                             type="file"
@@ -1913,6 +2660,7 @@ const AdminDashboard = () => {
                             }
                         />
                     </label>
+
                 </div>
 
                 <label
@@ -1930,7 +2678,10 @@ const AdminDashboard = () => {
                         hover:bg-blue-700
                     "
                 >
-                    <Camera size={18} />
+                    <Camera
+                        size={18}
+                    />
+
                     Change Photo
 
                     <input
@@ -1952,32 +2703,52 @@ const AdminDashboard = () => {
     // =====================================================
 
     const renderContent = () => {
-        switch (activeSection) {
+
+        switch (
+            activeSection
+        ) {
 
             case "companies":
-                return <CompaniesSection />;
+                return (
+                    <CompaniesSection />
+                );
 
             case "company-details":
-                return <CompanyDetailsSection />;
+                return (
+                    <CompanyDetailsSection />
+                );
 
             case "jobs":
-                return <JobsSection />;
+                return (
+                    <JobsSection />
+                );
 
             case "job-details":
-                return <JobDetailsSection />;
+                return (
+                    <JobDetailsSection />
+                );
 
             case "users":
-                return <UsersSection />;
+                return (
+                    <UsersSection />
+                );
 
             case "applications":
-                return <ApplicationsSection />;
+                return (
+                    <ApplicationsSection />
+                );
 
             case "profile":
-                return <ProfileSection />;
+                return (
+                    <ProfileSection />
+                );
 
             case "dashboard":
+
             default:
-                return <DashboardSection />;
+                return (
+                    <DashboardSection />
+                );
         }
     };
 
@@ -2052,7 +2823,9 @@ const AdminDashboard = () => {
                     {renderContent()}
 
                 </main>
+
             </div>
+
         </div>
     );
 };

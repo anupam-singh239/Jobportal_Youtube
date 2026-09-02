@@ -29,6 +29,10 @@ export const adminLogin = async (req, res) => {
             process.env.ADMIN_PASSWORD;
 
         if (!adminEmail || !adminPassword) {
+            console.error(
+                "ADMIN_EMAIL or ADMIN_PASSWORD is missing."
+            );
+
             return res.status(500).json({
                 success: false,
                 message:
@@ -84,9 +88,11 @@ export const adminLogin = async (req, res) => {
             success: true,
             message: "Admin login successful.",
         });
-
     } catch (error) {
-        console.error("Admin Login Error:", error);
+        console.error(
+            "Admin Login Error:",
+            error
+        );
 
         return res.status(500).json({
             success: false,
@@ -118,15 +124,20 @@ export const getAdminStats = async (req, res) => {
             await Company.find()
                 .sort({ createdAt: -1 })
                 .limit(5)
-                .select("name logo createdAt");
+                .select(
+                    "name logo description website location createdAt"
+                );
 
         const recentJobs =
             await Job.find()
                 .sort({ createdAt: -1 })
                 .limit(5)
-                .populate("company", "name logo")
+                .populate(
+                    "company",
+                    "name logo"
+                )
                 .select(
-                    "title location jobType createdAt company"
+                    "title description location jobType salary experienceLevel position createdAt company"
                 );
 
         const recentUsers =
@@ -151,7 +162,6 @@ export const getAdminStats = async (req, res) => {
             recentJobs,
             recentUsers,
         });
-
     } catch (error) {
         console.error(
             "Admin Dashboard Stats Error:",
@@ -167,19 +177,22 @@ export const getAdminStats = async (req, res) => {
 };
 
 // ======================================================
-// GET ALL COMPANIES - ADMIN
+// GET ALL COMPANIES
 // ======================================================
 
-export const getAllCompaniesAdmin = async (req, res) => {
+export const getAllCompaniesAdmin = async (
+    req,
+    res
+) => {
     try {
-        const companies = await Company.find()
-            .sort({ createdAt: -1 });
+        const companies =
+            await Company.find()
+                .sort({ createdAt: -1 });
 
         return res.status(200).json({
             success: true,
             companies,
         });
-
     } catch (error) {
         console.error(
             "Admin Get Companies Error:",
@@ -188,16 +201,20 @@ export const getAllCompaniesAdmin = async (req, res) => {
 
         return res.status(500).json({
             success: false,
-            message: "Failed to fetch companies.",
+            message:
+                "Failed to fetch companies.",
         });
     }
 };
 
 // ======================================================
-// DELETE COMPANY - ADMIN
+// DELETE COMPANY
 // ======================================================
 
-export const deleteCompanyAdmin = async (req, res) => {
+export const deleteCompanyAdmin = async (
+    req,
+    res
+) => {
     try {
         const companyId = req.params.id;
 
@@ -207,17 +224,20 @@ export const deleteCompanyAdmin = async (req, res) => {
         if (!company) {
             return res.status(404).json({
                 success: false,
-                message: "Company not found.",
+                message:
+                    "Company not found.",
             });
         }
 
-        await Company.findByIdAndDelete(companyId);
+        await Company.findByIdAndDelete(
+            companyId
+        );
 
         return res.status(200).json({
             success: true,
-            message: "Company deleted successfully.",
+            message:
+                "Company deleted successfully.",
         });
-
     } catch (error) {
         console.error(
             "Admin Delete Company Error:",
@@ -226,26 +246,33 @@ export const deleteCompanyAdmin = async (req, res) => {
 
         return res.status(500).json({
             success: false,
-            message: "Failed to delete company.",
+            message:
+                "Failed to delete company.",
         });
     }
 };
 
 // ======================================================
-// GET ALL JOBS - ADMIN
+// GET ALL JOBS
 // ======================================================
 
-export const getAllJobsAdmin = async (req, res) => {
+export const getAllJobsAdmin = async (
+    req,
+    res
+) => {
     try {
-        const jobs = await Job.find()
-            .populate("company", "name logo")
-            .sort({ createdAt: -1 });
+        const jobs =
+            await Job.find()
+                .populate(
+                    "company",
+                    "name logo"
+                )
+                .sort({ createdAt: -1 });
 
         return res.status(200).json({
             success: true,
             jobs,
         });
-
     } catch (error) {
         console.error(
             "Admin Get Jobs Error:",
@@ -254,16 +281,20 @@ export const getAllJobsAdmin = async (req, res) => {
 
         return res.status(500).json({
             success: false,
-            message: "Failed to fetch jobs.",
+            message:
+                "Failed to fetch jobs.",
         });
     }
 };
 
 // ======================================================
-// DELETE JOB - ADMIN
+// DELETE JOB
 // ======================================================
 
-export const deleteJobAdmin = async (req, res) => {
+export const deleteJobAdmin = async (
+    req,
+    res
+) => {
     try {
         const jobId = req.params.id;
 
@@ -273,17 +304,20 @@ export const deleteJobAdmin = async (req, res) => {
         if (!job) {
             return res.status(404).json({
                 success: false,
-                message: "Job not found.",
+                message:
+                    "Job not found.",
             });
         }
 
-        await Job.findByIdAndDelete(jobId);
+        await Job.findByIdAndDelete(
+            jobId
+        );
 
         return res.status(200).json({
             success: true,
-            message: "Job deleted successfully.",
+            message:
+                "Job deleted successfully.",
         });
-
     } catch (error) {
         console.error(
             "Admin Delete Job Error:",
@@ -292,28 +326,30 @@ export const deleteJobAdmin = async (req, res) => {
 
         return res.status(500).json({
             success: false,
-            message: "Failed to delete job.",
+            message:
+                "Failed to delete job.",
         });
     }
 };
 
 // ======================================================
-// GET ALL USERS - ADMIN
+// GET ALL USERS
 // ======================================================
 
-export const getAllUsersAdmin = async (req, res) => {
+export const getAllUsersAdmin = async (
+    req,
+    res
+) => {
     try {
-        const users = await User.find()
-            .select(
-                "-password"
-            )
-            .sort({ createdAt: -1 });
+        const users =
+            await User.find()
+                .select("-password")
+                .sort({ createdAt: -1 });
 
         return res.status(200).json({
             success: true,
             users,
         });
-
     } catch (error) {
         console.error(
             "Admin Get Users Error:",
@@ -322,16 +358,20 @@ export const getAllUsersAdmin = async (req, res) => {
 
         return res.status(500).json({
             success: false,
-            message: "Failed to fetch users.",
+            message:
+                "Failed to fetch users.",
         });
     }
 };
 
 // ======================================================
-// GET ALL APPLICATIONS - ADMIN
+// GET ALL APPLICATIONS
 // ======================================================
 
-export const getAllApplicationsAdmin = async (req, res) => {
+export const getAllApplicationsAdmin = async (
+    req,
+    res
+) => {
     try {
         const applications =
             await Application.find()
@@ -339,22 +379,19 @@ export const getAllApplicationsAdmin = async (req, res) => {
                     "applicant",
                     "-password"
                 )
-                .populate(
-                    {
-                        path: "job",
-                        populate: {
-                            path: "company",
-                            select: "name logo",
-                        },
-                    }
-                )
+                .populate({
+                    path: "job",
+                    populate: {
+                        path: "company",
+                        select: "name logo",
+                    },
+                })
                 .sort({ createdAt: -1 });
 
         return res.status(200).json({
             success: true,
             applications,
         });
-
     } catch (error) {
         console.error(
             "Admin Get Applications Error:",
@@ -370,7 +407,7 @@ export const getAllApplicationsAdmin = async (req, res) => {
 };
 
 // ======================================================
-// UPDATE APPLICATION STATUS - ADMIN
+// UPDATE APPLICATION STATUS
 // ======================================================
 
 export const updateApplicationStatusAdmin = async (
@@ -385,8 +422,11 @@ export const updateApplicationStatusAdmin = async (
             req.body;
 
         if (
-            !["pending", "accepted", "rejected"]
-                .includes(status)
+            ![
+                "pending",
+                "accepted",
+                "rejected",
+            ].includes(status)
         ) {
             return res.status(400).json({
                 success: false,
@@ -418,7 +458,6 @@ export const updateApplicationStatusAdmin = async (
                 "Application status updated successfully.",
             application,
         });
-
     } catch (error) {
         console.error(
             "Admin Update Application Status Error:",
@@ -437,7 +476,10 @@ export const updateApplicationStatusAdmin = async (
 // ADMIN LOGOUT
 // ======================================================
 
-export const adminLogout = async (req, res) => {
+export const adminLogout = async (
+    req,
+    res
+) => {
     try {
         res.clearCookie(
             "adminToken",
@@ -459,7 +501,6 @@ export const adminLogout = async (req, res) => {
             message:
                 "Admin logout successful.",
         });
-
     } catch (error) {
         console.error(
             "Admin Logout Error:",
