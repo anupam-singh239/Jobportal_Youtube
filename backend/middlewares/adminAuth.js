@@ -1,123 +1,51 @@
-import express from "express";
+import jwt from "jsonwebtoken";
 
-import {
-    adminLogin,
-    adminLogout,
-    getAdminStats,
+const adminAuth = async (req, res, next) => {
+    try {
+        const token = req.cookies.adminToken;
 
-    getAllCompaniesAdmin,
-    deleteCompanyAdmin,
+        if (!token) {
+            return res.status(401).json({
+                success: false,
+                message: "Admin is not authenticated.",
+            });
+        }
 
-    getAllJobsAdmin,
-    deleteJobAdmin,
+        const secret =
+            process.env.ADMIN_JWT_SECRET ||
+            process.env.SECRET_KEY;
 
-    getAllUsersAdmin,
+        const decoded = jwt.verify(
+            token,
+            secret
+        );
 
-    getAllApplicationsAdmin,
-    updateApplicationStatusAdmin,
-} from "../controllers/admin.controller.js";
+        if (
+            !decoded ||
+            decoded.isAdmin !== true
+        ) {
+            return res.status(403).json({
+                success: false,
+                message: "Access denied.",
+            });
+        }
 
-import adminAuth from "../middlewares/adminAuth.js";
+        req.admin = decoded;
 
-const router = express.Router();
+        next();
 
-// ======================================================
-// ADMIN LOGIN
-// ======================================================
+    } catch (error) {
+        console.error(
+            "Admin Authentication Error:",
+            error
+        );
 
-router.post(
-    "/login",
-    adminLogin
-);
+        return res.status(401).json({
+            success: false,
+            message:
+                "Admin authentication failed.",
+        });
+    }
+};
 
-// ======================================================
-// ADMIN STATS
-// ======================================================
-
-router.get(
-    "/stats",
-    adminAuth,
-    getAdminStats
-);
-
-// ======================================================
-// ALL COMPANIES
-// ======================================================
-
-router.get(
-    "/companies",
-    adminAuth,
-    getAllCompaniesAdmin
-);
-
-// ======================================================
-// DELETE COMPANY
-// ======================================================
-
-router.delete(
-    "/companies/:id",
-    adminAuth,
-    deleteCompanyAdmin
-);
-
-// ======================================================
-// ALL JOBS
-// ======================================================
-
-router.get(
-    "/jobs",
-    adminAuth,
-    getAllJobsAdmin
-);
-
-// ======================================================
-// DELETE JOB
-// ======================================================
-
-router.delete(
-    "/jobs/:id",
-    adminAuth,
-    deleteJobAdmin
-);
-
-// ======================================================
-// ALL USERS
-// ======================================================
-
-router.get(
-    "/users",
-    adminAuth,
-    getAllUsersAdmin
-);
-
-// ======================================================
-// ALL APPLICATIONS
-// ======================================================
-
-router.get(
-    "/applications",
-    adminAuth,
-    getAllApplicationsAdmin
-);
-
-// ======================================================
-// UPDATE APPLICATION STATUS
-// ======================================================
-
-router.put(
-    "/applications/:id/status",
-    adminAuth,
-    updateApplicationStatusAdmin
-);
-
-// ======================================================
-// ADMIN LOGOUT
-// ======================================================
-
-router.post(
-    "/logout",
-    adminAuth,
-    adminLogout
-);
-
-export default router;
+export default adminAuth;
