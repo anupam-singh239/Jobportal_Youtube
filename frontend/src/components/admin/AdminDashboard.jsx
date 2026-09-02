@@ -1,8 +1,4 @@
-import React, {
-    useEffect,
-    useState,
-} from "react";
-
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -29,23 +25,16 @@ import toast from "react-hot-toast";
 // =====================================================
 
 const API_BASE_URL =
-    import.meta.env.VITE_API_URL || "http://localhost:8000";
-
+    "https://jobportal-youtube-8f7p.onrender.com";
 
 // =====================================================
 // ADMIN DASHBOARD
 // =====================================================
 
 const AdminDashboard = () => {
-
     const navigate = useNavigate();
 
-    // =================================================
-    // STATES
-    // =================================================
-
     const [sidebarOpen, setSidebarOpen] = useState(false);
-
     const [loading, setLoading] = useState(true);
 
     const [stats, setStats] = useState({
@@ -56,20 +45,15 @@ const AdminDashboard = () => {
     });
 
     const [recentCompanies, setRecentCompanies] = useState([]);
-
     const [recentJobs, setRecentJobs] = useState([]);
-
     const [recentUsers, setRecentUsers] = useState([]);
 
-
-    // =================================================
+    // =====================================================
     // FETCH DASHBOARD DATA
-    // =================================================
+    // =====================================================
 
     const fetchDashboardData = async () => {
-
         try {
-
             setLoading(true);
 
             const res = await axios.get(
@@ -79,8 +63,12 @@ const AdminDashboard = () => {
                 }
             );
 
-            if (res.data?.success) {
+            console.log(
+                "Dashboard API Response:",
+                res.data
+            );
 
+            if (res.data?.success) {
                 setStats(
                     res.data.stats || {
                         companies: 0,
@@ -101,70 +89,64 @@ const AdminDashboard = () => {
                 setRecentUsers(
                     res.data.recentUsers || []
                 );
-
             } else {
-
                 toast.error(
                     res.data?.message ||
-                    "Failed to load dashboard."
+                        "Failed to load dashboard."
                 );
-
             }
-
         } catch (error) {
-
             console.error(
                 "Dashboard Error:",
                 error
+            );
+
+            console.error(
+                "Dashboard Status:",
+                error.response?.status
+            );
+
+            console.error(
+                "Dashboard Response:",
+                error.response?.data
             );
 
             if (
                 error.response?.status === 401 ||
                 error.response?.status === 403
             ) {
-
                 toast.error(
-                    "Please login as admin."
+                    "Admin session expired. Please login again."
                 );
 
-                navigate("/admin-login");
-
+                navigate("/admin-login", {
+                    replace: true,
+                });
             } else {
-
                 toast.error(
                     error.response?.data?.message ||
-                    "Failed to load dashboard."
+                        "Failed to load dashboard."
                 );
-
             }
-
         } finally {
-
             setLoading(false);
-
         }
     };
 
-
-    // =================================================
+    // =====================================================
     // USE EFFECT
-    // =================================================
+    // =====================================================
 
     useEffect(() => {
-
         fetchDashboardData();
-
     }, []);
 
-
-    // =================================================
+    // =====================================================
     // LOGOUT
-    // =================================================
+    // =====================================================
 
     const handleLogout = async () => {
-
         try {
-
             await axios.post(
                 `${API_BASE_URL}/api/v1/admin/logout`,
                 {},
@@ -177,47 +159,44 @@ const AdminDashboard = () => {
                 "Admin logout successful."
             );
 
-            navigate("/admin-login");
-
+            navigate("/admin-login", {
+                replace: true,
+            });
         } catch (error) {
-
             console.error(
                 "Logout Error:",
                 error
             );
 
-            navigate("/admin-login");
-
+            navigate("/admin-login", {
+                replace: true,
+            });
         }
     };
 
-
-    // =================================================
+    // =====================================================
     // FORMAT DATE
-    // =================================================
+    // =====================================================
 
     const formatDate = (date) => {
+        if (!date) return "N/A";
 
-        if (!date) return "";
+        const formatted = new Date(
+            date
+        ).toLocaleDateString("en-IN", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+        });
 
-        return new Date(date).toLocaleDateString(
-            "en-IN",
-            {
-                day: "2-digit",
-                month: "short",
-                year: "numeric",
-            }
-        );
-
+        return formatted;
     };
 
-
-    // =================================================
+    // =====================================================
     // SIDEBAR
-    // =================================================
+    // =====================================================
 
     const Sidebar = () => (
-
         <aside
             className={`
                 fixed
@@ -239,22 +218,16 @@ const AdminDashboard = () => {
                 }
             `}
         >
-
             {/* LOGO */}
 
             <div className="h-20 flex items-center px-6 border-b border-white/10">
-
                 <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center">
-
                     <ShieldCheck size={25} />
-
                 </div>
 
                 <span className="text-2xl font-bold ml-3">
                     JobPortal
                 </span>
-
-                {/* MOBILE CLOSE */}
 
                 <button
                     onClick={() =>
@@ -262,20 +235,13 @@ const AdminDashboard = () => {
                     }
                     className="ml-auto lg:hidden"
                 >
-
                     <X size={24} />
-
                 </button>
-
             </div>
-
 
             {/* MENU */}
 
             <div className="px-4 py-6 space-y-2">
-
-                {/* DASHBOARD */}
-
                 <button
                     className="
                         w-full
@@ -289,17 +255,9 @@ const AdminDashboard = () => {
                         text-white
                     "
                 >
-
                     <LayoutDashboard size={21} />
-
-                    <span>
-                        Dashboard
-                    </span>
-
+                    <span>Dashboard</span>
                 </button>
-
-
-                {/* COMPANIES */}
 
                 <button
                     onClick={() =>
@@ -317,17 +275,9 @@ const AdminDashboard = () => {
                         transition
                     "
                 >
-
                     <Building2 size={21} />
-
-                    <span>
-                        Companies
-                    </span>
-
+                    <span>Companies</span>
                 </button>
-
-
-                {/* JOBS */}
 
                 <button
                     onClick={() =>
@@ -345,17 +295,9 @@ const AdminDashboard = () => {
                         transition
                     "
                 >
-
                     <BriefcaseBusiness size={21} />
-
-                    <span>
-                        Jobs
-                    </span>
-
+                    <span>Jobs</span>
                 </button>
-
-
-                {/* USERS */}
 
                 <button
                     onClick={() =>
@@ -373,17 +315,9 @@ const AdminDashboard = () => {
                         transition
                     "
                 >
-
                     <Users size={21} />
-
-                    <span>
-                        Users
-                    </span>
-
+                    <span>Users</span>
                 </button>
-
-
-                {/* APPLICATIONS */}
 
                 <button
                     onClick={() =>
@@ -401,19 +335,14 @@ const AdminDashboard = () => {
                         transition
                     "
                 >
-
                     <FileText size={21} />
-
-                    <span>
-                        Applications
-                    </span>
-
+                    <span>Applications</span>
                 </button>
 
-
-                {/* PROFILE */}
-
                 <button
+                    onClick={() =>
+                        toast("View only dashboard")
+                    }
                     className="
                         w-full
                         flex
@@ -426,17 +355,9 @@ const AdminDashboard = () => {
                         transition
                     "
                 >
-
                     <User size={21} />
-
-                    <span>
-                        Profile
-                    </span>
-
+                    <span>Profile</span>
                 </button>
-
-
-                {/* LOGOUT */}
 
                 <button
                     onClick={handleLogout}
@@ -454,17 +375,10 @@ const AdminDashboard = () => {
                         mt-8
                     "
                 >
-
                     <LogOut size={21} />
-
-                    <span>
-                        Logout
-                    </span>
-
+                    <span>Logout</span>
                 </button>
-
             </div>
-
 
             {/* ADMIN PROFILE */}
 
@@ -479,9 +393,7 @@ const AdminDashboard = () => {
                     p-3
                 "
             >
-
                 <div className="flex items-center gap-3">
-
                     <div
                         className="
                             w-11
@@ -493,16 +405,13 @@ const AdminDashboard = () => {
                             justify-center
                         "
                     >
-
                         <User
                             className="text-gray-600"
                             size={24}
                         />
-
                     </div>
 
                     <div className="overflow-hidden">
-
                         <p className="font-semibold text-sm">
                             Super Admin
                         </p>
@@ -510,29 +419,20 @@ const AdminDashboard = () => {
                         <p className="text-xs text-gray-300 truncate">
                             Admin Account
                         </p>
-
                     </div>
-
                 </div>
-
             </div>
-
         </aside>
     );
 
-
-    // =================================================
+    // =====================================================
     // LOADING
-    // =================================================
+    // =====================================================
 
     if (loading) {
-
         return (
-
             <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-
                 <div className="text-center">
-
                     <div
                         className="
                             w-10
@@ -549,33 +449,22 @@ const AdminDashboard = () => {
                     <p className="mt-4 text-gray-500">
                         Loading dashboard...
                     </p>
-
                 </div>
-
             </div>
-
         );
-
     }
 
-
-    // =================================================
+    // =====================================================
     // MAIN DASHBOARD
-    // =================================================
+    // =====================================================
 
     return (
-
         <div className="min-h-screen bg-[#f5f7fb]">
-
-            {/* SIDEBAR */}
-
             <Sidebar />
-
 
             {/* MOBILE OVERLAY */}
 
             {sidebarOpen && (
-
                 <div
                     onClick={() =>
                         setSidebarOpen(false)
@@ -588,15 +477,12 @@ const AdminDashboard = () => {
                         lg:hidden
                     "
                 />
-
             )}
-
 
             {/* MAIN AREA */}
 
             <div className="lg:ml-64">
-
-                {/* TOP HEADER */}
+                {/* HEADER */}
 
                 <header
                     className="
@@ -611,20 +497,14 @@ const AdminDashboard = () => {
                         lg:px-8
                     "
                 >
-
                     <div className="flex items-center gap-4">
-
-                        {/* MOBILE MENU */}
-
                         <button
                             onClick={() =>
                                 setSidebarOpen(true)
                             }
                             className="lg:hidden"
                         >
-
                             <Menu size={26} />
-
                         </button>
 
                         <h1
@@ -637,14 +517,9 @@ const AdminDashboard = () => {
                         >
                             Admin Dashboard
                         </h1>
-
                     </div>
 
-
-                    {/* ADMIN */}
-
                     <div className="flex items-center gap-3">
-
                         <div
                             className="
                                 w-10
@@ -656,37 +531,23 @@ const AdminDashboard = () => {
                                 justify-center
                             "
                         >
-
                             <User
                                 size={21}
                                 className="text-gray-600"
                             />
-
                         </div>
 
                         <div className="hidden sm:block">
-
                             <p className="font-semibold text-sm">
                                 Super Admin
                             </p>
-
                         </div>
-
                     </div>
-
                 </header>
-
 
                 {/* CONTENT */}
 
-                <main
-                    className="
-                        p-4
-                        sm:p-6
-                        lg:p-8
-                    "
-                >
-
+                <main className="p-4 sm:p-6 lg:p-8">
                     {/* WELCOME */}
 
                     <div
@@ -705,9 +566,7 @@ const AdminDashboard = () => {
                             gap-4
                         "
                     >
-
                         <div>
-
                             <h2
                                 className="
                                     text-xl
@@ -719,17 +578,11 @@ const AdminDashboard = () => {
                                 Welcome back, Super Admin! 👋
                             </h2>
 
-                            <p
-                                className="
-                                    text-gray-500
-                                    mt-1
-                                "
-                            >
-                                Here's what's happening with your job portal.
+                            <p className="text-gray-500 mt-1">
+                                Here's what's happening with
+                                your job portal.
                             </p>
-
                         </div>
-
 
                         <div
                             className="
@@ -740,7 +593,6 @@ const AdminDashboard = () => {
                                 text-sm
                             "
                         >
-
                             <CalendarDays size={19} />
 
                             {new Date().toLocaleDateString(
@@ -751,11 +603,8 @@ const AdminDashboard = () => {
                                     year: "numeric",
                                 }
                             )}
-
                         </div>
-
                     </div>
-
 
                     {/* STAT CARDS */}
 
@@ -769,347 +618,144 @@ const AdminDashboard = () => {
                             mb-6
                         "
                     >
-
                         {/* COMPANIES */}
 
-                        <div
-                            className="
-                                bg-white
-                                rounded-2xl
-                                border
-                                p-5
-                                shadow-sm
-                            "
-                        >
-
+                        <div className="bg-white rounded-2xl border p-5 shadow-sm">
                             <div className="flex items-center justify-between">
-
                                 <div>
-
                                     <p className="text-sm text-gray-500">
                                         Total Companies
                                     </p>
 
-                                    <h3
-                                        className="
-                                            text-3xl
-                                            font-bold
-                                            text-gray-800
-                                            mt-2
-                                        "
-                                    >
+                                    <h3 className="text-3xl font-bold text-gray-800 mt-2">
                                         {stats.companies}
                                     </h3>
 
-                                    <p
-                                        className="
-                                            text-sm
-                                            text-green-600
-                                            mt-2
-                                        "
-                                    >
+                                    <p className="text-sm text-green-600 mt-2">
                                         Companies added
                                     </p>
-
                                 </div>
 
-                                <div
-                                    className="
-                                        w-14
-                                        h-14
-                                        rounded-xl
-                                        bg-blue-100
-                                        flex
-                                        items-center
-                                        justify-center
-                                    "
-                                >
-
+                                <div className="w-14 h-14 rounded-xl bg-blue-100 flex items-center justify-center">
                                     <Building2
                                         size={28}
                                         className="text-blue-600"
                                     />
-
                                 </div>
-
                             </div>
-
                         </div>
-
 
                         {/* JOBS */}
 
-                        <div
-                            className="
-                                bg-white
-                                rounded-2xl
-                                border
-                                p-5
-                                shadow-sm
-                            "
-                        >
-
+                        <div className="bg-white rounded-2xl border p-5 shadow-sm">
                             <div className="flex items-center justify-between">
-
                                 <div>
-
                                     <p className="text-sm text-gray-500">
                                         Total Jobs Posted
                                     </p>
 
-                                    <h3
-                                        className="
-                                            text-3xl
-                                            font-bold
-                                            text-gray-800
-                                            mt-2
-                                        "
-                                    >
+                                    <h3 className="text-3xl font-bold text-gray-800 mt-2">
                                         {stats.jobs}
                                     </h3>
 
-                                    <p
-                                        className="
-                                            text-sm
-                                            text-green-600
-                                            mt-2
-                                        "
-                                    >
+                                    <p className="text-sm text-green-600 mt-2">
                                         Jobs available
                                     </p>
-
                                 </div>
 
-                                <div
-                                    className="
-                                        w-14
-                                        h-14
-                                        rounded-xl
-                                        bg-green-100
-                                        flex
-                                        items-center
-                                        justify-center
-                                    "
-                                >
-
+                                <div className="w-14 h-14 rounded-xl bg-green-100 flex items-center justify-center">
                                     <BriefcaseBusiness
                                         size={28}
                                         className="text-green-600"
                                     />
-
                                 </div>
-
                             </div>
-
                         </div>
-
 
                         {/* USERS */}
 
-                        <div
-                            className="
-                                bg-white
-                                rounded-2xl
-                                border
-                                p-5
-                                shadow-sm
-                            "
-                        >
-
+                        <div className="bg-white rounded-2xl border p-5 shadow-sm">
                             <div className="flex items-center justify-between">
-
                                 <div>
-
                                     <p className="text-sm text-gray-500">
                                         Total Users
                                     </p>
 
-                                    <h3
-                                        className="
-                                            text-3xl
-                                            font-bold
-                                            text-gray-800
-                                            mt-2
-                                        "
-                                    >
+                                    <h3 className="text-3xl font-bold text-gray-800 mt-2">
                                         {stats.users}
                                     </h3>
 
-                                    <p
-                                        className="
-                                            text-sm
-                                            text-green-600
-                                            mt-2
-                                        "
-                                    >
+                                    <p className="text-sm text-green-600 mt-2">
                                         Registered users
                                     </p>
-
                                 </div>
 
-                                <div
-                                    className="
-                                        w-14
-                                        h-14
-                                        rounded-xl
-                                        bg-purple-100
-                                        flex
-                                        items-center
-                                        justify-center
-                                    "
-                                >
-
+                                <div className="w-14 h-14 rounded-xl bg-purple-100 flex items-center justify-center">
                                     <Users
                                         size={28}
                                         className="text-purple-600"
                                     />
-
                                 </div>
-
                             </div>
-
                         </div>
-
 
                         {/* APPLICATIONS */}
 
-                        <div
-                            className="
-                                bg-white
-                                rounded-2xl
-                                border
-                                p-5
-                                shadow-sm
-                            "
-                        >
-
+                        <div className="bg-white rounded-2xl border p-5 shadow-sm">
                             <div className="flex items-center justify-between">
-
                                 <div>
-
                                     <p className="text-sm text-gray-500">
                                         Total Applications
                                     </p>
 
-                                    <h3
-                                        className="
-                                            text-3xl
-                                            font-bold
-                                            text-gray-800
-                                            mt-2
-                                        "
-                                    >
+                                    <h3 className="text-3xl font-bold text-gray-800 mt-2">
                                         {stats.applications}
                                     </h3>
 
-                                    <p
-                                        className="
-                                            text-sm
-                                            text-green-600
-                                            mt-2
-                                        "
-                                    >
+                                    <p className="text-sm text-green-600 mt-2">
                                         Applications received
                                     </p>
-
                                 </div>
 
-                                <div
-                                    className="
-                                        w-14
-                                        h-14
-                                        rounded-xl
-                                        bg-orange-100
-                                        flex
-                                        items-center
-                                        justify-center
-                                    "
-                                >
-
+                                <div className="w-14 h-14 rounded-xl bg-orange-100 flex items-center justify-center">
                                     <TrendingUp
                                         size={28}
                                         className="text-orange-500"
                                     />
-
                                 </div>
-
                             </div>
-
                         </div>
-
                     </div>
-
 
                     {/* LOWER SECTION */}
 
-                    <div
-                        className="
-                            grid
-                            grid-cols-1
-                            xl:grid-cols-2
-                            gap-6
-                        "
-                    >
-
+                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
                         {/* RECENT COMPANIES */}
 
-                        <div
-                            className="
-                                bg-white
-                                rounded-2xl
-                                border
-                                shadow-sm
-                            "
-                        >
-
-                            <div
-                                className="
-                                    p-5
-                                    border-b
-                                    flex
-                                    items-center
-                                    justify-between
-                                "
-                            >
-
-                                <h3
-                                    className="
-                                        text-lg
-                                        font-bold
-                                        text-gray-800
-                                    "
-                                >
+                        <div className="bg-white rounded-2xl border shadow-sm">
+                            <div className="p-5 border-b flex items-center justify-between">
+                                <h3 className="text-lg font-bold text-gray-800">
                                     Recent Companies
                                 </h3>
 
-                                <span
-                                    className="
-                                        text-sm
-                                        text-blue-600
-                                        font-medium
-                                    "
-                                >
+                                <span className="text-sm text-blue-600 font-medium">
                                     View All
                                 </span>
-
                             </div>
 
-
                             <div className="p-5">
-
-                                {recentCompanies.length === 0 ? (
-
+                                {recentCompanies.length ===
+                                0 ? (
                                     <p className="text-gray-500 text-center py-8">
                                         No companies found.
                                     </p>
-
                                 ) : (
-
                                     recentCompanies.map(
                                         (company) => (
-
                                             <div
-                                                key={company._id}
+                                                key={
+                                                    company._id
+                                                }
                                                 className="
                                                     flex
                                                     items-center
@@ -1119,7 +765,6 @@ const AdminDashboard = () => {
                                                     last:border-b-0
                                                 "
                                             >
-
                                                 <div
                                                     className="
                                                         w-11
@@ -1133,132 +778,74 @@ const AdminDashboard = () => {
                                                         overflow-hidden
                                                     "
                                                 >
-
                                                     {company.logo ? (
-
                                                         <img
-                                                            src={company.logo}
-                                                            alt={company.name || "Company"}
-                                                            className="
-                                                                w-full
-                                                                h-full
-                                                                object-contain
-                                                            "
+                                                            src={
+                                                                company.logo
+                                                            }
+                                                            alt={
+                                                                company.name ||
+                                                                "Company"
+                                                            }
+                                                            className="w-full h-full object-contain"
                                                         />
-
                                                     ) : (
-
                                                         <Building2
-                                                            size={22}
+                                                            size={
+                                                                22
+                                                            }
                                                             className="text-gray-400"
                                                         />
-
                                                     )}
-
                                                 </div>
 
-
                                                 <div className="flex-1 min-w-0">
-
-                                                    <p
-                                                        className="
-                                                            font-semibold
-                                                            text-gray-800
-                                                            truncate
-                                                        "
-                                                    >
-                                                        {company.name}
+                                                    <p className="font-semibold text-gray-800 truncate">
+                                                        {
+                                                            company.name
+                                                        }
                                                     </p>
 
-                                                    <p
-                                                        className="
-                                                            text-sm
-                                                            text-gray-500
-                                                        "
-                                                    >
+                                                    <p className="text-sm text-gray-500">
                                                         Joined on{" "}
                                                         {formatDate(
                                                             company.createdAt
                                                         )}
                                                     </p>
-
                                                 </div>
-
 
                                                 <MoreVertical
                                                     size={20}
                                                     className="text-gray-400"
                                                 />
-
                                             </div>
-
                                         )
                                     )
-
                                 )}
-
                             </div>
-
                         </div>
-
 
                         {/* RECENT USERS */}
 
-                        <div
-                            className="
-                                bg-white
-                                rounded-2xl
-                                border
-                                shadow-sm
-                            "
-                        >
-
-                            <div
-                                className="
-                                    p-5
-                                    border-b
-                                    flex
-                                    items-center
-                                    justify-between
-                                "
-                            >
-
-                                <h3
-                                    className="
-                                        text-lg
-                                        font-bold
-                                        text-gray-800
-                                    "
-                                >
+                        <div className="bg-white rounded-2xl border shadow-sm">
+                            <div className="p-5 border-b flex items-center justify-between">
+                                <h3 className="text-lg font-bold text-gray-800">
                                     Recent Users
                                 </h3>
 
-                                <span
-                                    className="
-                                        text-sm
-                                        text-blue-600
-                                        font-medium
-                                    "
-                                >
+                                <span className="text-sm text-blue-600 font-medium">
                                     View All
                                 </span>
-
                             </div>
 
-
                             <div className="p-5">
-
                                 {recentUsers.length === 0 ? (
-
                                     <p className="text-gray-500 text-center py-8">
                                         No users found.
                                     </p>
-
                                 ) : (
-
                                     recentUsers.map(
                                         (user) => (
-
                                             <div
                                                 key={user._id}
                                                 className="
@@ -1270,7 +857,6 @@ const AdminDashboard = () => {
                                                     last:border-b-0
                                                 "
                                             >
-
                                                 <div
                                                     className="
                                                         w-11
@@ -1283,60 +869,41 @@ const AdminDashboard = () => {
                                                         overflow-hidden
                                                     "
                                                 >
-
-                                                    {user.profile?.profilePhoto ? (
-
+                                                    {user.profile
+                                                        ?.profilePhoto ? (
                                                         <img
                                                             src={
-                                                                user.profile.profilePhoto
+                                                                user
+                                                                    .profile
+                                                                    .profilePhoto
                                                             }
                                                             alt={
-                                                                user.fullname || "User"
+                                                                user.fullname ||
+                                                                "User"
                                                             }
-                                                            className="
-                                                                w-full
-                                                                h-full
-                                                                rounded-full
-                                                                object-cover
-                                                            "
+                                                            className="w-full h-full rounded-full object-cover"
                                                         />
-
                                                     ) : (
-
                                                         <User
-                                                            size={22}
+                                                            size={
+                                                                22
+                                                            }
                                                             className="text-gray-500"
                                                         />
-
                                                     )}
-
                                                 </div>
-
 
                                                 <div className="flex-1 min-w-0">
-
-                                                    <p
-                                                        className="
-                                                            font-semibold
-                                                            text-gray-800
-                                                            truncate
-                                                        "
-                                                    >
-                                                        {user.fullname || "User"}
+                                                    <p className="font-semibold text-gray-800 truncate">
+                                                        {user.fullname ||
+                                                            "User"}
                                                     </p>
 
-                                                    <p
-                                                        className="
-                                                            text-sm
-                                                            text-gray-500
-                                                            truncate
-                                                        "
-                                                    >
-                                                        {user.email || ""}
+                                                    <p className="text-sm text-gray-500 truncate">
+                                                        {user.email ||
+                                                            ""}
                                                     </p>
-
                                                 </div>
-
 
                                                 <span
                                                     className="
@@ -1350,20 +917,15 @@ const AdminDashboard = () => {
                                                         text-gray-600
                                                     "
                                                 >
-                                                    {user.role || "User"}
+                                                    {user.role ||
+                                                        "User"}
                                                 </span>
-
                                             </div>
-
                                         )
                                     )
-
                                 )}
-
                             </div>
-
                         </div>
-
 
                         {/* RECENT JOBS */}
 
@@ -1376,53 +938,24 @@ const AdminDashboard = () => {
                                 xl:col-span-2
                             "
                         >
-
-                            <div
-                                className="
-                                    p-5
-                                    border-b
-                                    flex
-                                    items-center
-                                    justify-between
-                                "
-                            >
-
-                                <h3
-                                    className="
-                                        text-lg
-                                        font-bold
-                                        text-gray-800
-                                    "
-                                >
+                            <div className="p-5 border-b flex items-center justify-between">
+                                <h3 className="text-lg font-bold text-gray-800">
                                     Recent Jobs
                                 </h3>
 
-                                <span
-                                    className="
-                                        text-sm
-                                        text-blue-600
-                                        font-medium
-                                    "
-                                >
+                                <span className="text-sm text-blue-600 font-medium">
                                     View All
                                 </span>
-
                             </div>
 
-
                             <div className="p-5">
-
                                 {recentJobs.length === 0 ? (
-
                                     <p className="text-gray-500 text-center py-8">
                                         No jobs found.
                                     </p>
-
                                 ) : (
-
                                     recentJobs.map(
                                         (job) => (
-
                                             <div
                                                 key={job._id}
                                                 className="
@@ -1434,9 +967,6 @@ const AdminDashboard = () => {
                                                     last:border-b-0
                                                 "
                                             >
-
-                                                {/* COMPANY LOGO */}
-
                                                 <div
                                                     className="
                                                         w-11
@@ -1451,69 +981,48 @@ const AdminDashboard = () => {
                                                         shrink-0
                                                     "
                                                 >
-
-                                                    {job.company?.logo ? (
-
+                                                    {job.company
+                                                        ?.logo ? (
                                                         <img
                                                             src={
-                                                                job.company.logo
+                                                                job
+                                                                    .company
+                                                                    .logo
                                                             }
                                                             alt={
-                                                                job.company.name ||
+                                                                job
+                                                                    .company
+                                                                    .name ||
                                                                 "Company"
                                                             }
-                                                            className="
-                                                                w-full
-                                                                h-full
-                                                                object-contain
-                                                            "
+                                                            className="w-full h-full object-contain"
                                                         />
-
                                                     ) : (
-
                                                         <BriefcaseBusiness
-                                                            size={22}
+                                                            size={
+                                                                22
+                                                            }
                                                             className="text-gray-400"
                                                         />
-
                                                     )}
-
                                                 </div>
-
-
-                                                {/* JOB INFO */}
 
                                                 <div className="flex-1 min-w-0">
-
-                                                    <p
-                                                        className="
-                                                            font-semibold
-                                                            text-gray-800
-                                                            truncate
-                                                        "
-                                                    >
-                                                        {job.title || "Untitled Job"}
+                                                    <p className="font-semibold text-gray-800 truncate">
+                                                        {job.title ||
+                                                            "Untitled Job"}
                                                     </p>
 
-                                                    <p
-                                                        className="
-                                                            text-sm
-                                                            text-gray-500
-                                                            truncate
-                                                        "
-                                                    >
-                                                        {job.company?.name ||
+                                                    <p className="text-sm text-gray-500 truncate">
+                                                        {job
+                                                            .company
+                                                            ?.name ||
                                                             "Company"}
-
                                                         {" • "}
-
-                                                        {job.jobType || "Job"}
+                                                        {job.jobType ||
+                                                            "Job"}
                                                     </p>
-
                                                 </div>
-
-
-                                                {/* DATE */}
 
                                                 <p
                                                     className="
@@ -1529,33 +1038,21 @@ const AdminDashboard = () => {
                                                     )}
                                                 </p>
 
-
                                                 <MoreVertical
                                                     size={20}
                                                     className="text-gray-400"
                                                 />
-
                                             </div>
-
                                         )
                                     )
-
                                 )}
-
                             </div>
-
                         </div>
-
                     </div>
-
                 </main>
-
             </div>
-
         </div>
-
     );
-
 };
 
 export default AdminDashboard;
