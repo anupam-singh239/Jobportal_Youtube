@@ -1,4 +1,4 @@
-export const USER_API_END_POINT = "https://jobportal-youtube-2.onrender.com/api/v1/user";
-export const JOB_API_END_POINT = "https://jobportal-youtube-2.onrender.com/api/v1/job";
-export const APPLICATION_API_END_POINT = "https://jobportal-youtube-2.onrender.com/api/v1/application";
-export const COMPANY_API_END_POINT = "https://jobportal-youtube-2.onrender.com/api/v1/company";
+const USER_API_END_POINT = "https://jobportal-youtube-8f7p.onrender.com/api/v1/user";
+const JOB_API_END_POINT = "https://jobportal-youtube-8f7p.onrender.com/api/v1/job";
+const APPLICATION_API_END_POINT = "https://jobportal-youtube-8f7p.onrender.com/api/v1/application";
+const COMPANY_API_END_POINT = "https://jobportal-youtube-8f7p.onrender.com/api/v1/company";
