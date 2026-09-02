@@ -181,15 +181,23 @@ const AdminDashboard = () => {
     const formatDate = (date) => {
         if (!date) return "N/A";
 
-        const formatted = new Date(
-            date
-        ).toLocaleDateString("en-IN", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric",
-        });
+        return new Date(date).toLocaleDateString(
+            "en-IN",
+            {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+            }
+        );
+    };
 
-        return formatted;
+    // =====================================================
+    // NAVIGATION HELPER
+    // =====================================================
+
+    const goTo = (path) => {
+        setSidebarOpen(false);
+        navigate(path);
     };
 
     // =====================================================
@@ -242,7 +250,11 @@ const AdminDashboard = () => {
             {/* MENU */}
 
             <div className="px-4 py-6 space-y-2">
+
+                {/* DASHBOARD */}
+
                 <button
+                    onClick={() => goTo("/admin-dashboard")}
                     className="
                         w-full
                         flex
@@ -259,10 +271,10 @@ const AdminDashboard = () => {
                     <span>Dashboard</span>
                 </button>
 
+                {/* COMPANIES */}
+
                 <button
-                    onClick={() =>
-                        toast("View only dashboard")
-                    }
+                    onClick={() => goTo("/admin/companies")}
                     className="
                         w-full
                         flex
@@ -279,10 +291,10 @@ const AdminDashboard = () => {
                     <span>Companies</span>
                 </button>
 
+                {/* JOBS */}
+
                 <button
-                    onClick={() =>
-                        toast("View only dashboard")
-                    }
+                    onClick={() => goTo("/admin/jobs")}
                     className="
                         w-full
                         flex
@@ -299,9 +311,11 @@ const AdminDashboard = () => {
                     <span>Jobs</span>
                 </button>
 
+                {/* USERS */}
+
                 <button
                     onClick={() =>
-                        toast("View only dashboard")
+                        toast("Users page is not created yet.")
                     }
                     className="
                         w-full
@@ -319,9 +333,13 @@ const AdminDashboard = () => {
                     <span>Users</span>
                 </button>
 
+                {/* APPLICATIONS */}
+
                 <button
                     onClick={() =>
-                        toast("View only dashboard")
+                        toast(
+                            "Applications page is not created yet."
+                        )
                     }
                     className="
                         w-full
@@ -339,10 +357,10 @@ const AdminDashboard = () => {
                     <span>Applications</span>
                 </button>
 
+                {/* PROFILE */}
+
                 <button
-                    onClick={() =>
-                        toast("View only dashboard")
-                    }
+                    onClick={() => goTo("/profile")}
                     className="
                         w-full
                         flex
@@ -358,6 +376,8 @@ const AdminDashboard = () => {
                     <User size={21} />
                     <span>Profile</span>
                 </button>
+
+                {/* LOGOUT */}
 
                 <button
                     onClick={handleLogout}
@@ -460,6 +480,7 @@ const AdminDashboard = () => {
 
     return (
         <div className="min-h-screen bg-[#f5f7fb]">
+
             <Sidebar />
 
             {/* MOBILE OVERLAY */}
@@ -482,6 +503,7 @@ const AdminDashboard = () => {
             {/* MAIN AREA */}
 
             <div className="lg:ml-64">
+
                 {/* HEADER */}
 
                 <header
@@ -498,6 +520,7 @@ const AdminDashboard = () => {
                     "
                 >
                     <div className="flex items-center gap-4">
+
                         <button
                             onClick={() =>
                                 setSidebarOpen(true)
@@ -520,6 +543,7 @@ const AdminDashboard = () => {
                     </div>
 
                     <div className="flex items-center gap-3">
+
                         <div
                             className="
                                 w-10
@@ -548,6 +572,7 @@ const AdminDashboard = () => {
                 {/* CONTENT */}
 
                 <main className="p-4 sm:p-6 lg:p-8">
+
                     {/* WELCOME */}
 
                     <div
@@ -567,6 +592,7 @@ const AdminDashboard = () => {
                         "
                     >
                         <div>
+
                             <h2
                                 className="
                                     text-xl
@@ -582,6 +608,7 @@ const AdminDashboard = () => {
                                 Here's what's happening with
                                 your job portal.
                             </p>
+
                         </div>
 
                         <div
@@ -618,10 +645,17 @@ const AdminDashboard = () => {
                             mb-6
                         "
                     >
+
                         {/* COMPANIES */}
 
-                        <div className="bg-white rounded-2xl border p-5 shadow-sm">
+                        <button
+                            onClick={() =>
+                                goTo("/admin/companies")
+                            }
+                            className="text-left bg-white rounded-2xl border p-5 shadow-sm hover:shadow-md transition"
+                        >
                             <div className="flex items-center justify-between">
+
                                 <div>
                                     <p className="text-sm text-gray-500">
                                         Total Companies
@@ -642,13 +676,20 @@ const AdminDashboard = () => {
                                         className="text-blue-600"
                                     />
                                 </div>
+
                             </div>
-                        </div>
+                        </button>
 
                         {/* JOBS */}
 
-                        <div className="bg-white rounded-2xl border p-5 shadow-sm">
+                        <button
+                            onClick={() =>
+                                goTo("/admin/jobs")
+                            }
+                            className="text-left bg-white rounded-2xl border p-5 shadow-sm hover:shadow-md transition"
+                        >
                             <div className="flex items-center justify-between">
+
                                 <div>
                                     <p className="text-sm text-gray-500">
                                         Total Jobs Posted
@@ -669,13 +710,15 @@ const AdminDashboard = () => {
                                         className="text-green-600"
                                     />
                                 </div>
+
                             </div>
-                        </div>
+                        </button>
 
                         {/* USERS */}
 
                         <div className="bg-white rounded-2xl border p-5 shadow-sm">
                             <div className="flex items-center justify-between">
+
                                 <div>
                                     <p className="text-sm text-gray-500">
                                         Total Users
@@ -696,6 +739,7 @@ const AdminDashboard = () => {
                                         className="text-purple-600"
                                     />
                                 </div>
+
                             </div>
                         </div>
 
@@ -703,6 +747,7 @@ const AdminDashboard = () => {
 
                         <div className="bg-white rounded-2xl border p-5 shadow-sm">
                             <div className="flex items-center justify-between">
+
                                 <div>
                                     <p className="text-sm text-gray-500">
                                         Total Applications
@@ -723,27 +768,41 @@ const AdminDashboard = () => {
                                         className="text-orange-500"
                                     />
                                 </div>
+
                             </div>
                         </div>
+
                     </div>
 
                     {/* LOWER SECTION */}
 
                     <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+
                         {/* RECENT COMPANIES */}
 
                         <div className="bg-white rounded-2xl border shadow-sm">
+
                             <div className="p-5 border-b flex items-center justify-between">
+
                                 <h3 className="text-lg font-bold text-gray-800">
                                     Recent Companies
                                 </h3>
 
-                                <span className="text-sm text-blue-600 font-medium">
+                                <button
+                                    onClick={() =>
+                                        goTo(
+                                            "/admin/companies"
+                                        )
+                                    }
+                                    className="text-sm text-blue-600 font-medium hover:underline"
+                                >
                                     View All
-                                </span>
+                                </button>
+
                             </div>
 
                             <div className="p-5">
+
                                 {recentCompanies.length ===
                                 0 ? (
                                     <p className="text-gray-500 text-center py-8">
@@ -765,6 +824,7 @@ const AdminDashboard = () => {
                                                     last:border-b-0
                                                 "
                                             >
+
                                                 <div
                                                     className="
                                                         w-11
@@ -800,6 +860,7 @@ const AdminDashboard = () => {
                                                 </div>
 
                                                 <div className="flex-1 min-w-0">
+
                                                     <p className="font-semibold text-gray-800 truncate">
                                                         {
                                                             company.name
@@ -812,33 +873,47 @@ const AdminDashboard = () => {
                                                             company.createdAt
                                                         )}
                                                     </p>
+
                                                 </div>
 
                                                 <MoreVertical
                                                     size={20}
                                                     className="text-gray-400"
                                                 />
+
                                             </div>
                                         )
                                     )
                                 )}
+
                             </div>
                         </div>
 
                         {/* RECENT USERS */}
 
                         <div className="bg-white rounded-2xl border shadow-sm">
+
                             <div className="p-5 border-b flex items-center justify-between">
+
                                 <h3 className="text-lg font-bold text-gray-800">
                                     Recent Users
                                 </h3>
 
-                                <span className="text-sm text-blue-600 font-medium">
+                                <button
+                                    onClick={() =>
+                                        toast(
+                                            "Users page is not created yet."
+                                        )
+                                    }
+                                    className="text-sm text-blue-600 font-medium hover:underline"
+                                >
                                     View All
-                                </span>
+                                </button>
+
                             </div>
 
                             <div className="p-5">
+
                                 {recentUsers.length === 0 ? (
                                     <p className="text-gray-500 text-center py-8">
                                         No users found.
@@ -857,6 +932,7 @@ const AdminDashboard = () => {
                                                     last:border-b-0
                                                 "
                                             >
+
                                                 <div
                                                     className="
                                                         w-11
@@ -894,6 +970,7 @@ const AdminDashboard = () => {
                                                 </div>
 
                                                 <div className="flex-1 min-w-0">
+
                                                     <p className="font-semibold text-gray-800 truncate">
                                                         {user.fullname ||
                                                             "User"}
@@ -903,6 +980,7 @@ const AdminDashboard = () => {
                                                         {user.email ||
                                                             ""}
                                                     </p>
+
                                                 </div>
 
                                                 <span
@@ -920,10 +998,12 @@ const AdminDashboard = () => {
                                                     {user.role ||
                                                         "User"}
                                                 </span>
+
                                             </div>
                                         )
                                     )
                                 )}
+
                             </div>
                         </div>
 
@@ -938,17 +1018,26 @@ const AdminDashboard = () => {
                                 xl:col-span-2
                             "
                         >
+
                             <div className="p-5 border-b flex items-center justify-between">
+
                                 <h3 className="text-lg font-bold text-gray-800">
                                     Recent Jobs
                                 </h3>
 
-                                <span className="text-sm text-blue-600 font-medium">
+                                <button
+                                    onClick={() =>
+                                        goTo("/admin/jobs")
+                                    }
+                                    className="text-sm text-blue-600 font-medium hover:underline"
+                                >
                                     View All
-                                </span>
+                                </button>
+
                             </div>
 
                             <div className="p-5">
+
                                 {recentJobs.length === 0 ? (
                                     <p className="text-gray-500 text-center py-8">
                                         No jobs found.
@@ -967,6 +1056,7 @@ const AdminDashboard = () => {
                                                     last:border-b-0
                                                 "
                                             >
+
                                                 <div
                                                     className="
                                                         w-11
@@ -1008,6 +1098,7 @@ const AdminDashboard = () => {
                                                 </div>
 
                                                 <div className="flex-1 min-w-0">
+
                                                     <p className="font-semibold text-gray-800 truncate">
                                                         {job.title ||
                                                             "Untitled Job"}
@@ -1022,6 +1113,7 @@ const AdminDashboard = () => {
                                                         {job.jobType ||
                                                             "Job"}
                                                     </p>
+
                                                 </div>
 
                                                 <p
@@ -1042,12 +1134,15 @@ const AdminDashboard = () => {
                                                     size={20}
                                                     className="text-gray-400"
                                                 />
+
                                             </div>
                                         )
                                     )
                                 )}
+
                             </div>
                         </div>
+
                     </div>
                 </main>
             </div>
