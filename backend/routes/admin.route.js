@@ -10,29 +10,20 @@ import adminAuth from "../middlewares/adminAuth.js";
 
 const router = express.Router();
 
-// ======================================================
-// ADMIN LOGIN
-// ======================================================
-
+// Admin Login
 router.post(
     "/login",
     adminLogin
 );
 
-// ======================================================
-// ADMIN DASHBOARD STATS
-// ======================================================
-
+// Admin Dashboard Stats
 router.get(
     "/stats",
     adminAuth,
     getAdminStats
 );
 
-// ======================================================
-// ADMIN LOGOUT
-// ======================================================
-
+// Admin Logout
 router.post(
     "/logout",
     adminAuth,

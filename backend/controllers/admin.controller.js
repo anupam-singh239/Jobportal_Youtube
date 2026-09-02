@@ -21,36 +21,73 @@ export const adminLogin = async (req, res) => {
             });
         }
 
-        // Normalize email
+        // Remove extra spaces and convert email to lowercase
         const enteredEmail = email.trim().toLowerCase();
 
         const adminEmail =
             process.env.ADMIN_EMAIL?.trim().toLowerCase();
 
+        const adminPassword =
+            process.env.ADMIN_PASSWORD;
+
+        // Check whether Render environment variables exist
+        if (!adminEmail || !adminPassword) {
+            console.error(
+                "ADMIN_EMAIL or ADMIN_PASSWORD is missing in environment variables."
+            );
+
+            return res.status(500).json({
+                success: false,
+                message:
+                    "Admin credentials are not configured on the server.",
+            });
+        }
+
         // Check admin credentials
         if (
             enteredEmail !== adminEmail ||
-            password !== process.env.ADMIN_PASSWORD
+            password !== adminPassword
         ) {
+            console.log("Admin login failed.");
+            console.log(
+                "Entered email:",
+                enteredEmail
+            );
+            console.log(
+                "Configured admin email:",
+                adminEmail
+            );
+
             return res.status(401).json({
                 success: false,
                 message: "Invalid admin credentials.",
             });
         }
 
-        // JWT Secret
+        // ==================================================
+        // JWT SECRET
+        // ==================================================
+
         const secret =
             process.env.ADMIN_JWT_SECRET ||
             process.env.SECRET_KEY;
 
         if (!secret) {
+            console.error(
+                "ADMIN_JWT_SECRET and SECRET_KEY are both missing."
+            );
+
             return res.status(500).json({
                 success: false,
-                message: "Admin JWT secret is not configured.",
+                message:
+                    "Admin JWT secret is not configured.",
             });
         }
 
-        // Create JWT token
+        // ==================================================
+        // CREATE JWT TOKEN
+        // ==================================================
+
         const token = jwt.sign(
             {
                 isAdmin: true,
@@ -62,7 +99,10 @@ export const adminLogin = async (req, res) => {
             }
         );
 
-        // Set admin cookie
+        // ==================================================
+        // SAVE TOKEN IN COOKIE
+        // ==================================================
+
         res.cookie("adminToken", token, {
             httpOnly: true,
 
@@ -77,13 +117,16 @@ export const adminLogin = async (req, res) => {
             maxAge: 24 * 60 * 60 * 1000,
         });
 
+        // ==================================================
+        // SUCCESS RESPONSE
+        // ==================================================
+
         return res.status(200).json({
             success: true,
             message: "Admin login successful.",
         });
 
     } catch (error) {
-
         console.error(
             "Admin Login Error:",
             error
@@ -91,7 +134,8 @@ export const adminLogin = async (req, res) => {
 
         return res.status(500).json({
             success: false,
-            message: "Server error during admin login.",
+            message:
+                "Server error during admin login.",
         });
     }
 };
@@ -139,7 +183,9 @@ export const getAdminStats = async (req, res) => {
             await Company.find()
                 .sort({ createdAt: -1 })
                 .limit(5)
-                .select("name logo createdAt");
+                .select(
+                    "name logo createdAt"
+                );
 
         // ==================================================
         // RECENT JOBS
@@ -149,7 +195,10 @@ export const getAdminStats = async (req, res) => {
             await Job.find()
                 .sort({ createdAt: -1 })
                 .limit(5)
-                .populate("company", "name logo")
+                .populate(
+                    "company",
+                    "name logo"
+                )
                 .select(
                     "title location jobType createdAt company"
                 );
@@ -167,7 +216,7 @@ export const getAdminStats = async (req, res) => {
                 );
 
         // ==================================================
-        // RESPONSE
+        // SEND RESPONSE
         // ==================================================
 
         return res.status(200).json({
@@ -207,21 +256,28 @@ export const getAdminStats = async (req, res) => {
 export const adminLogout = async (req, res) => {
     try {
 
-        res.clearCookie("adminToken", {
-            httpOnly: true,
+        // Clear admin cookie
+        res.clearCookie(
+            "adminToken",
+            {
+                httpOnly: true,
 
-            secure:
-                process.env.NODE_ENV === "production",
+                secure:
+                    process.env.NODE_ENV ===
+                    "production",
 
-            sameSite:
-                process.env.NODE_ENV === "production"
-                    ? "none"
-                    : "lax",
-        });
+                sameSite:
+                    process.env.NODE_ENV ===
+                    "production"
+                        ? "none"
+                        : "lax",
+            }
+        );
 
         return res.status(200).json({
             success: true,
-            message: "Admin logout successful.",
+            message:
+                "Admin logout successful.",
         });
 
     } catch (error) {
@@ -233,7 +289,8 @@ export const adminLogout = async (req, res) => {
 
         return res.status(500).json({
             success: false,
-            message: "Failed to logout.",
+            message:
+                "Failed to logout.",
         });
     }
 };
