@@ -255,6 +255,8 @@ function Navbar() {
 
                         <div className="flex items-center gap-2">
 
+                            {/* USER LOGIN */}
+
                             <Link to="/login">
 
                                 <button
@@ -266,6 +268,22 @@ function Navbar() {
 
                             </Link>
 
+
+                            {/* ADMIN LOGIN */}
+
+                            <Link to="/admin-login">
+
+                                <button
+                                    type="button"
+                                    className="border border-[#F83002] text-[#F83002] px-4 py-2 rounded-md hover:bg-red-50 transition cursor-pointer"
+                                >
+                                    Admin Login
+                                </button>
+
+                            </Link>
+
+
+                            {/* SIGNUP */}
 
                             <Link to="/signup">
 
@@ -516,7 +534,9 @@ function Navbar() {
 
                             {!user ? (
 
-                                <div className="grid grid-cols-2 gap-3">
+                                <div className="grid grid-cols-1 gap-3">
+
+                                    {/* USER LOGIN */}
 
                                     <Link
                                         to="/login"
@@ -532,6 +552,25 @@ function Navbar() {
 
                                     </Link>
 
+
+                                    {/* ADMIN LOGIN */}
+
+                                    <Link
+                                        to="/admin-login"
+                                        onClick={closeMobileMenu}
+                                    >
+
+                                        <button
+                                            type="button"
+                                            className="w-full border border-[#F83002] text-[#F83002] px-4 py-3 rounded-lg font-medium hover:bg-red-50 transition"
+                                        >
+                                            Admin Login
+                                        </button>
+
+                                    </Link>
+
+
+                                    {/* SIGNUP */}
 
                                     <Link
                                         to="/signup"
