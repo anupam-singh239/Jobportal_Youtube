@@ -1,43 +1,79 @@
 # Job Portal
 
+A full-stack Job Portal web application that connects job seekers with recruiters.
+
 ## 🚀 Live Demo
+
 https://jobportal.buzz/
 
 ## 📌 About
-A full-stack Job Portal web application that connects job seekers with recruiters. 
-Users can create profiles, search and filter jobs, view job details, apply for jobs 
-and upload resumes, while recruiters can manage companies and post job opportunities.
+
+Job Portal is a full-stack web application designed to connect job seekers with recruiters.
+
+Job seekers can create profiles, search and filter jobs, view job details, apply for jobs and upload resumes. Recruiters can manage company information and post job opportunities.
 
 ## ✨ Features
+
 - User Authentication
 - Job Search
 - Job Filtering
 - Job Details
+- Job Application
 - Recruiter Dashboard
 - Job Posting
 - Resume Upload
 - Profile Management
+- Responsive User Interface
 
 ## 🛠️ Tech Stack
-Frontend:
+
+### Frontend
+
 - React.js
+- JavaScript
 - Redux
 - React Router
 - Tailwind CSS
+- HTML5
+- CSS3
 
-Backend:
+### Backend
+
 - Node.js
 - Express.js
+- REST APIs
+
+### Database
+
 - MongoDB
 - Mongoose
 
-## 📸 Screenshots
-![Job Portal Home Page](image-link)
-## ⚙️ Installation
+### Tools & Services
 
-## 🔐 Environment Variables
+- Git
+- GitHub
+- Postman
+- Cloudinary
+- Multer
+- Render
 
 ## 📁 Project Structure
 
-## 👨‍💻 Author
-Anupam Singh
+```text
+Jobportal_Youtube/
+│
+├── frontend/
+│   ├── src/
+│   ├── public/
+│   └── package.json
+│
+├── backend/
+│   ├── controllers/
+│   ├── models/
+│   ├── routes/
+│   ├── middlewares/
+│   └── package.json
+│
+├── .gitignore
+├── package.json
+└── README.md
