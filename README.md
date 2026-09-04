@@ -32,7 +32,7 @@ Backend:
 - Mongoose
 
 ## 📸 Screenshots
-
+![Job Portal Home Page](image-link)
 ## ⚙️ Installation
 
 ## 🔐 Environment Variables
