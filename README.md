@@ -4,7 +4,9 @@
 https://jobportal.buzz/
 
 ## 📌 About
-...
+A full-stack Job Portal web application that connects job seekers with recruiters. 
+Users can create profiles, search and filter jobs, view job details, apply for jobs 
+and upload resumes, while recruiters can manage companies and post job opportunities.
 
 ## ✨ Features
 - User Authentication
