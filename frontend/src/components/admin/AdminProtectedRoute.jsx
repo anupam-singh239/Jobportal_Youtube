@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import axios from "axios";
+import { useSelector } from "react-redux";
 
 const API_BASE_URL =
     "https://jobportal-youtube-8f7p.onrender.com";
@@ -9,8 +10,33 @@ const AdminProtectedRoute = ({ children }) => {
     const [loading, setLoading] = useState(true);
     const [isAdmin, setIsAdmin] = useState(false);
 
+    // Redux se logged-in user
+    const { user } = useSelector(
+        (store) => store.auth
+    );
+
     useEffect(() => {
         const checkAdminAuth = async () => {
+
+            // =========================================
+            // RECRUITER LOGIN
+            // =========================================
+
+            if (user?.role === "recruiter") {
+                console.log(
+                    "Recruiter authenticated successfully"
+                );
+
+                setIsAdmin(true);
+                setLoading(false);
+
+                return;
+            }
+
+            // =========================================
+            // OLD ADMIN AUTHENTICATION
+            // =========================================
+
             try {
                 const res = await axios.get(
                     `${API_BASE_URL}/api/v1/admin/stats`,
@@ -29,7 +55,9 @@ const AdminProtectedRoute = ({ children }) => {
                 } else {
                     setIsAdmin(false);
                 }
+
             } catch (error) {
+
                 console.error(
                     "Admin authentication failed:",
                     error
@@ -46,27 +74,41 @@ const AdminProtectedRoute = ({ children }) => {
                 );
 
                 setIsAdmin(false);
+
             } finally {
                 setLoading(false);
             }
         };
 
         checkAdminAuth();
-    }, []);
+
+    }, [user]);
+
+    // =========================================
+    // LOADING
+    // =========================================
 
     if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gray-100">
+
                 <div className="text-center">
+
                     <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
 
                     <p className="mt-4 text-gray-600">
                         Checking admin authentication...
                     </p>
+
                 </div>
+
             </div>
         );
     }
+
+    // =========================================
+    // NOT AUTHENTICATED
+    // =========================================
 
     if (!isAdmin) {
         return (
@@ -76,6 +118,10 @@ const AdminProtectedRoute = ({ children }) => {
             />
         );
     }
+
+    // =========================================
+    // AUTHENTICATED
+    // =========================================
 
     return children;
 };
